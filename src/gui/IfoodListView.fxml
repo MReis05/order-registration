@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="433.0" prefWidth="555.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.IfoodListViewController">
+   <children>
+      <ToolBar prefHeight="40.0" prefWidth="200.0">
+        <items>
+          <Button fx:id="btNew" mnemonicParsing="false" onAction="#onBtNewAction" text="New" />
+        </items>
+      </ToolBar>
+      <TableView fx:id="tableViewIfood" prefHeight="200.0" prefWidth="200.0">
+        <columns>
+          <TableColumn fx:id="tableColumnId" prefWidth="56.0" text="Id" />
+          <TableColumn fx:id="tableColumnOrderValue" prefWidth="73.0" text="Valor" />
+            <TableColumn fx:id="tableColumnDeliveryValue" prefWidth="75.0" text="Entrega" />
+            <TableColumn fx:id="tableColumnTax" prefWidth="66.0" text="Taxa" />
+            <TableColumn fx:id="tableColumnForIfood" prefWidth="79.0" text="Pelo Ifood" />
+            <TableColumn fx:id="tableColumnPaymentType" prefWidth="101.0" text="M.Pagamento" />
+            <TableColumn fx:id="tableColumnPaymentValue" prefWidth="89.0" text="V.Pagamento" />
+        </columns>
+      </TableView>
+   </children>
+</VBox>

@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	private Scene mainScene;
+	private static Scene mainScene;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -28,7 +28,7 @@ public class Main extends Application {
 		}
 	}
 
-	public Scene getMainScene() {
+	public static Scene getMainScene() {
 		return mainScene;
 	}
 
