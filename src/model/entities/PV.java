@@ -1,7 +1,10 @@
 package model.entities;
 
-public class PV extends Order {
+import java.io.Serializable;
 
+public class PV extends Order implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private PaymentMethod payment = new PaymentMethod();
 	
 	public PV(Order order, String payment) {

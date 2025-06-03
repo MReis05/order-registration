@@ -1,23 +1,32 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Ifood;
+import model.entities.Order;
 import model.services.IfoodService;
 
 public class IfoodListController implements Initializable {
@@ -54,8 +63,10 @@ public class IfoodListController implements Initializable {
 	private Button btNew;
 	
 	@FXML
-	public void onBtNewAction() {
-		System.out.println("onBtNewAction");
+	public void onBtNewAction(ActionEvent event) {
+		Stage parentStage = Utils.currentStage(event);
+		Ifood obj = new Ifood(new Order());
+		dialogForm(obj, "/gui/IfoodDialogForm.fxml", parentStage);
 	}
 
 	@Override
@@ -88,6 +99,29 @@ public class IfoodListController implements Initializable {
 		List<Ifood> list = service.findAll();
 		obsList = FXCollections.observableArrayList(list);
 		tableViewIfood.setItems(obsList);
+	}
+	
+	private void dialogForm(Ifood obj, String absoluteView, Stage parentStage) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteView));
+			Pane pane = loader.load();
+			
+			IfoodFormController controller = loader.getController();
+			controller.setIfood(obj);
+			controller.updateFormData();
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Entre com os dados do pedido");
+			dialogStage.setScene(new Scene(pane));
+			dialogStage.setResizable(false);
+			dialogStage.initOwner(parentStage);
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.showAndWait();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			Alerts.showAlert("IOException", "Error in loading view", e.getMessage(), AlertType.ERROR);
+		}
 	}
 
 	public IfoodService getService() {
