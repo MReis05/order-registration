@@ -1,10 +1,16 @@
 package model.entities;
 
-public class Order {
+import java.io.Serializable;
 
+public class Order implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private Integer id;
 	private Double orderValue;
 	private Double deliveryValue;
+
+	public Order() {
+	}
 
 	public Order(Integer id, Double orderValue, Double deliveryValue) {
 		this.id = id;

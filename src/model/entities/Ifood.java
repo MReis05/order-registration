@@ -1,7 +1,10 @@
 package model.entities;
 
-public class Ifood extends Order {
+import java.io.Serializable;
 
+public class Ifood  extends Order implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private Double forIfood;
 	private Double tax;
 	private Integer serviceTax;
@@ -10,7 +13,9 @@ public class Ifood extends Order {
 
 	public Ifood(Order order) {
 		super(order.getId(), order.getOrderValue(), order.getDeliveryValue());
-		taxForIfood(order.getOrderValue());
+		if(order.getOrderValue() != null) {
+			taxForIfood(order.getOrderValue());
+		}
 	}
 
 	public Ifood(Order order, String payment) {
