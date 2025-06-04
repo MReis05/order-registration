@@ -24,7 +24,7 @@ public class Ifood  extends Order implements Serializable {
 	}
 
 	public Ifood(Order order, double cutValue, String payment) {
-		super(order.getId(), order.getOrderValue(), order.getDeliveryValue());
+		super(order.getId(), order.getOrderValue() + cutValue, order.getDeliveryValue());
 		cutPayments(order.getOrderValue(), cutValue, payment);
 	}
 
@@ -73,12 +73,7 @@ public class Ifood  extends Order implements Serializable {
 	}
 
 	public void cutPayments(double order, double cutValue, String paymentMethod) {
-		if (order - cutValue > 0) {
-			payment.setPaymentMethod(paymentMethod, order - cutValue);
-		}
-		else {
-			payment.setPaymentMethod(paymentMethod, cutValue - order);
-		}
+			payment.setPaymentMethod(paymentMethod, order);
 		
 		forIfood = cutValue;
 		tax = (order + cutValue) * 0.12;
