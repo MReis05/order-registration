@@ -37,5 +37,4 @@ public class PaymentMethod {
 	public void setPaymentValue(Double paymentValue) {
 		this.paymentValue = paymentValue;
 	}
-
 }

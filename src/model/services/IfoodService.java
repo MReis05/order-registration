@@ -15,7 +15,7 @@ public class IfoodService {
 	}
 	
 	public void saveOrUpdate (Ifood obj) {
-		if (obj == null) {
+		if (obj.getId() == null) {
 			dao.insert(obj);
 		}
 		else {

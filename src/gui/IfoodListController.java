@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -29,7 +30,7 @@ import model.entities.Ifood;
 import model.entities.Order;
 import model.services.IfoodService;
 
-public class IfoodListController implements Initializable {
+public class IfoodListController implements Initializable, DataChangeListener {
 	
 	private IfoodService service;
 	
@@ -107,6 +108,8 @@ public class IfoodListController implements Initializable {
 			Pane pane = loader.load();
 			
 			IfoodFormController controller = loader.getController();
+			controller.setIfoodService(new IfoodService());
+			controller.subscribeDataChangeListener(this);
 			controller.setIfood(obj);
 			controller.updateFormData();
 			
@@ -130,6 +133,12 @@ public class IfoodListController implements Initializable {
 
 	public void setService(IfoodService service) {
 		this.service = service;
+	}
+
+	@Override
+	public void dataChangeListeners() {
+		updateTableView();
+		
 	}
 
 }
