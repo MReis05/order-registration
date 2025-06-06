@@ -18,6 +18,11 @@
                         <MenuItem fx:id="menuItemPV" mnemonicParsing="false" onAction="#onMenuItemPVAction" text="PV" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="Results">
+                    <items>
+                      <MenuItem fx:id="menuItemResult" mnemonicParsing="false" onAction="#onMenuItemResultAction" text="Totais" />
+                    </items>
+                  </Menu>
               </menus>
             </MenuBar>
          </children>
