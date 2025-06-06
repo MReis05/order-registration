@@ -8,15 +8,17 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="380.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.IfoodTotalController">
+<AnchorPane prefHeight="380.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ResultsController">
    <children>
-      <GridPane layoutY="9.0" prefHeight="271.0" prefWidth="304.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="9.0">
+      <GridPane gridLinesVisible="true" layoutY="9.0" prefHeight="316.0" prefWidth="398.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="9.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="168.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="0.0" prefWidth="42.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -38,7 +40,7 @@
                   <Insets />
                </GridPane.margin>
             </Label>
-            <Label alignment="CENTER" text="Entrega" textAlignment="CENTER" GridPane.rowIndex="1">
+            <Label alignment="CENTER" text="Entrega" textAlignment="CENTER" GridPane.rowIndex="3">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -46,7 +48,7 @@
                   <Insets left="19.0" />
                </padding>
             </Label>
-            <Label alignment="CENTER" text="Pelo Ifood" textAlignment="CENTER" GridPane.rowIndex="2">
+            <Label alignment="CENTER" text="Pelo Ifood" textAlignment="CENTER" GridPane.rowIndex="4">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -54,7 +56,7 @@
                   <Insets left="19.0" />
                </padding>
             </Label>
-            <Label alignment="CENTER" text="Taxa" GridPane.rowIndex="3">
+            <Label alignment="CENTER" text="Taxa" GridPane.rowIndex="5">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -62,7 +64,7 @@
                   <Insets left="19.0" />
                </padding>
             </Label>
-            <Label text="Taxa de Serviço P" GridPane.rowIndex="4">
+            <Label text="Taxa de Serviço P" GridPane.rowIndex="6">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -70,7 +72,7 @@
                   <Insets left="19.0" />
                </padding>
             </Label>
-            <Label text="Taxa de Serviço T" textAlignment="CENTER" GridPane.rowIndex="5">
+            <Label text="Taxa de Serviço T" textAlignment="CENTER" GridPane.rowIndex="7">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -78,7 +80,7 @@
                   <Insets left="19.0" />
                </GridPane.margin>
             </Label>
-            <Label text="Dinheiro" GridPane.rowIndex="6">
+            <Label text="Dinheiro" GridPane.rowIndex="8">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -86,7 +88,7 @@
                   <Insets left="19.0" />
                </GridPane.margin>
             </Label>
-            <Label text="Cartão" GridPane.rowIndex="7">
+            <Label text="Cartão" GridPane.rowIndex="9">
                <GridPane.margin>
                   <Insets left="19.0" />
                </GridPane.margin>
@@ -94,7 +96,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Label text="Pix" GridPane.rowIndex="8">
+            <Label text="Pix" GridPane.rowIndex="10">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -110,7 +112,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelDeliveryTotal" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label fx:id="labelDeliveryTotal" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -118,7 +120,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelForIfoodTotal" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Label fx:id="labelForIfoodTotal" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -126,7 +128,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelTaxTotal" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <Label fx:id="labelTaxTotal" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -134,7 +136,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelTaxOfServicePTotal" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <Label fx:id="labelTaxOfServicePTotal" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -142,7 +144,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelTaxOfServiceTTotal" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <Label fx:id="labelTaxOfServiceTTotal" GridPane.columnIndex="1" GridPane.rowIndex="7">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -150,7 +152,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelCashTotal" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <Label fx:id="labelCashTotal" GridPane.columnIndex="1" GridPane.rowIndex="8">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -158,7 +160,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelCardTotal" GridPane.columnIndex="1" GridPane.rowIndex="7">
+            <Label fx:id="labelCardTotal" GridPane.columnIndex="1" GridPane.rowIndex="9">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -166,7 +168,39 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelPixTotal" GridPane.columnIndex="1" GridPane.rowIndex="8">
+            <Label fx:id="labelPixTotal" GridPane.columnIndex="1" GridPane.rowIndex="10">
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label text="Ifood" GridPane.rowIndex="1">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </Label>
+            <Label text="PV" GridPane.rowIndex="2">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="labelIfoodTotal" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="labelPVTotal" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>

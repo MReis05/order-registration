@@ -29,10 +29,15 @@ public class PVService {
 		dao.deleteById(id);
 	}
 	
+	public void resetAll() {
+		dao.resetAll();
+	}
+	
 	public Map<String, Double> total(){
 		List<PV> list = dao.findAll();
 		Map<String, Double> map = new LinkedHashMap<>();
 		double totalValue = 0.00;
+		double pvTotal = 0.00;
 		double deliveryTotal = 0.00;
 		double cashTotal = 0.00;
 		double cardTotal = 0.00;
@@ -40,6 +45,7 @@ public class PVService {
 		
 		for(PV pv : list) {
 			totalValue += pv.getOrderValue();
+			pvTotal += pv.getOrderValue();
 			deliveryTotal += pv.getDeliveryValue();
 			switch(pv.getPayment().getPaymentMethod()) {
 			case "Dinheiro":
@@ -53,6 +59,7 @@ public class PVService {
 			}
 		}
 		map.put("totalValue", totalValue);
+		map.put("pvTotal", pvTotal);
 		map.put("deliveryTotal", deliveryTotal);
 		map.put("cashTotal", cashTotal);
 		map.put("cardTotal", cardTotal);

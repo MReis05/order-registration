@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
@@ -14,6 +15,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
@@ -23,7 +26,9 @@ import model.services.PVService;
 
 public class MainViewController implements Initializable {
 	
-	private IfoodService service;
+	private IfoodService ifoodService;
+	
+	private PVService pvService;
 
 	@FXML
 	private MenuItem menuItemIfood;
@@ -33,6 +38,9 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	private MenuItem menuItemResult;
+	
+	@FXML
+	private Button btReset;
 	
 	@FXML
 	public void onMenuItemIfoodAction() {
@@ -51,7 +59,17 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onMenuItemResultAction() {
-		totalScreen(result(), "/gui/IfoodTotalView.fxml");
+		totalScreen(result(), "/gui/ResultsView.fxml");
+	}
+	
+	@FXML
+	public void onBtResetAllAction() {
+		 Optional<ButtonType> result = Alerts.showConfirmation("Redefinir Dados", "Tem certeza que deseja apagar todos os dados de iFood e PV?");
+		    if (result.isPresent() && result.get() == ButtonType.OK) {
+		        ifoodService.resetAll();
+		        pvService.resetAll();
+		        Alerts.showAlert("Sucesso", null, "Todos os dados foram redefinidos.", AlertType.INFORMATION);
+		    }
 	}
 	
 	public synchronized <T> void loadView(String absoluteView, Consumer<T> consumer) {
@@ -79,7 +97,7 @@ public class MainViewController implements Initializable {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteView));
 			Pane pane = loader.load();
 			
-			IfoodTotalController controller = loader.getController();
+			ResultsController controller = loader.getController();
 			controller.setResult(result);
 			
 			Scene mainScene = Main.getMainScene();
@@ -97,12 +115,30 @@ public class MainViewController implements Initializable {
 	}
 	
 	public Map<String, Double> result(){
-		Map<String, Double> result = service.total();
+		Map<String, Double> result = ifoodService.total();
+		Map<String, Double> pv = pvService.total();
+		
+		for (String key : pv.keySet()) {
+			double value = 0.00;
+			if (result.containsKey(key)) {
+				value += result.get(key);
+				value += pv.get(key);
+				result.put(key, value);
+			}
+			else {
+				result.put(key, pv.get(key));
+			}
+		}
+		
 		return result;
 	}
 	
 	public void setIfoodService(IfoodService service) {
-		this.service = service;
+		this.ifoodService = service;
+	}
+	
+	public void setPVService(PVService service) {
+		this.pvService = service;
 	}
 
 	@Override

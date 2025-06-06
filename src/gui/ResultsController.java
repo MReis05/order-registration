@@ -9,10 +9,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 
-public class IfoodTotalController implements Initializable {
+public class ResultsController implements Initializable {
 	
 	@FXML
 	private Label labelTotal;
+	
+	@FXML
+	private Label labelIfoodTotal;
+	
+	@FXML
+	private Label labelPVTotal;
 	
 	@FXML
 	private Label labelDeliveryTotal;
@@ -41,6 +47,8 @@ public class IfoodTotalController implements Initializable {
 	public void setResult(Map<String, Double> results) {
 		Set<String> fields = results.keySet();
 		labelTotal.setText((fields.contains("totalValue") ? String.format("%.2f", results.get("totalValue")) : ""));
+		labelIfoodTotal.setText((fields.contains("ifoodTotal") ? String.format("%.2f", results.get("ifoodTotal")) : ""));
+		labelPVTotal.setText((fields.contains("pvTotal") ? String.format("%.2f", results.get("pvTotal")) : ""));
 		labelDeliveryTotal.setText((fields.contains("deliveryTotal") ? String.format("%.2f", results.get("deliveryTotal")) : ""));
 		labelForIfoodTotal.setText((fields.contains("forIfoodTotal") ? String.format("%.2f", results.get("forIfoodTotal")) : ""));
 		labelTaxTotal.setText((fields.contains("taxTotal") ? String.format("%.2f", results.get("taxTotal")) : ""));

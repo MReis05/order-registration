@@ -25,14 +25,19 @@ public class IfoodService {
 		}
 	}
 	
-	public void delete (Integer id) {
-		dao.deleteById(id);
+	public void delete (Ifood obj) {
+		dao.deleteById(obj.getId());
+	}
+	
+	public void resetAll() {
+		dao.resetAll();
 	}
 	
 	public Map<String, Double> total(){
 		List<Ifood> list = dao.findAll();
 		Map<String, Double> map = new LinkedHashMap<>();
 		double totalValue = 0.00;
+		double ifoodTotal = 0.00;
 		double deliveryTotal = 0.00;
 		double forIfoodTotal = 0.00;
 		double taxTotal = 0.00;
@@ -44,6 +49,7 @@ public class IfoodService {
 		
 		for(Ifood ifood : list) {
 			totalValue += ifood.getOrderValue();
+			ifoodTotal += ifood.getOrderValue();
 			deliveryTotal += ifood.getDeliveryValue();
 			forIfoodTotal += ifood.getForIfood();
 			taxTotal += ifood.getTax();
@@ -67,6 +73,7 @@ public class IfoodService {
 			}
 		}
 		map.put("totalValue", totalValue);
+		map.put("ifoodTotal", ifoodTotal);
 		map.put("deliveryTotal", deliveryTotal);
 		map.put("forIfoodTotal", forIfoodTotal);
 		map.put("taxTotal", taxTotal);
