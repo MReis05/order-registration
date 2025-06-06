@@ -13,7 +13,7 @@ public class PV extends Order implements Serializable {
 	
 	public PV(Order order, String payment) {
 		super(order.getId(), order.getOrderValue(), order.getDeliveryValue());
-	    getPayment().setPaymentMethod(payment, order.getOrderValue());	
+	    this.payment.setPaymentMethod(payment, order.getOrderValue());	
 	}
 
 	public PaymentMethod getPayment() {

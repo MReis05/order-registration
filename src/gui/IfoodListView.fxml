@@ -6,7 +6,7 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="433.0" prefWidth="555.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.IfoodListController">
+<VBox prefHeight="445.0" prefWidth="593.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.IfoodListController">
    <children>
       <ToolBar prefHeight="40.0" prefWidth="200.0">
         <items>
@@ -20,6 +20,7 @@
             <TableColumn fx:id="tableColumnDeliveryValue" prefWidth="75.0" text="Entrega" />
             <TableColumn fx:id="tableColumnCategory" prefWidth="139.0" text="Categoria" />
             <TableColumn fx:id="tableColumnPaymentMethod" prefWidth="147.0" text="Metódo de Pagamento" />
+            <TableColumn fx:id="tableColumnRemove" prefWidth="75.0" />
         </columns>
       </TableView>
    </children>

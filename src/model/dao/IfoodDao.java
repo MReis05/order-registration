@@ -9,5 +9,6 @@ public interface IfoodDao {
 	void insert (Ifood obj);
 	void update (Ifood obj);
 	void deleteById (Integer id);
+	void resetAll();
 	List<Ifood> findAll ();
 }

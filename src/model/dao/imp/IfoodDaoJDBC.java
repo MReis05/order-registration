@@ -148,4 +148,18 @@ public class IfoodDaoJDBC implements IfoodDao {
 		obj.setCategory(rs.getString("category"));
 		return obj;
 	}
+
+	@Override
+	public void resetAll() {
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement("TRUNCATE TABLE ifood");
+
+			st.executeUpdate();
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			Db.closeStatement(st);
+		}	
+	}
 }

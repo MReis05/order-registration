@@ -125,4 +125,18 @@ public class PVDaoJDBC implements PVDao {
 		return obj;
 	}
 
+	@Override
+	public void resetAll() {
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement("TRUNCATE TABLE pv");
+
+			st.executeUpdate();
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			Db.closeStatement(st);
+		}	
+	}
+
 }
