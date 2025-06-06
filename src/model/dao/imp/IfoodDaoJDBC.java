@@ -27,8 +27,8 @@ public class IfoodDaoJDBC implements IfoodDao {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-					"INSERT INTO ifood " + "(OrderValue, DeliveryValue, Tax, ForIfood, PaymentType, PaymentValue) "
-							+ "VALUES " + "(?, ?, ?, ?, ?, ?)",
+					"INSERT INTO ifood " + "(OrderValue, DeliveryValue, Tax, ForIfood, PaymentType, PaymentValue, category) "
+							+ "VALUES " + "(?, ?, ?, ?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			st.setDouble(1, obj.getOrderValue());
@@ -39,10 +39,17 @@ public class IfoodDaoJDBC implements IfoodDao {
 			}
 			st.setDouble(4, obj.getForIfood());
 			if (obj.getPayment().getPaymentValue() == null) {
-				obj.getPayment().setPaymentMethod(" ", 0.00);
+				obj.getPayment().setPaymentMethod("Ifood", 0.00);
+                st.setString(5, obj.getPayment().getPaymentMethod());
+                st.setDouble(6, obj.getPayment().getPaymentValue());
+				st.setString(7, "Ifood");
 			}
-			st.setString(5, obj.getPayment().getPaymentMethod());
-			st.setDouble(6, obj.getPayment().getPaymentValue());
+			else {
+				st.setString(5, obj.getPayment().getPaymentMethod());
+				st.setDouble(6, obj.getPayment().getPaymentValue());
+				st.setString(7, "Loja");
+			}
+			
 
 			int rowsAffected = st.executeUpdate();
 
@@ -70,7 +77,7 @@ public class IfoodDaoJDBC implements IfoodDao {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement("UPDATE ifood "
-					+ "SET OrderValue = ?, DeliveryValue = ?, Tax = ?, ForIfood = ?, PaymentType = ?, PaymentValue = ? "
+					+ "SET OrderValue = ?, DeliveryValue = ?, Tax = ?, ForIfood = ?, PaymentType = ?, PaymentValue = ?, category = ? "
 					+ "WHERE Id = ?");
 
 			st.setDouble(1, obj.getOrderValue());
@@ -79,7 +86,8 @@ public class IfoodDaoJDBC implements IfoodDao {
 			st.setDouble(4, obj.getForIfood());
 			st.setString(5, obj.getPayment().getPaymentMethod());
 			st.setDouble(6, obj.getPayment().getPaymentValue());
-			st.setInt(7, obj.getId());
+			st.setString(7, obj.getCategory());
+			st.setInt(8, obj.getId());
 
 			st.executeUpdate();
 
@@ -112,7 +120,7 @@ public class IfoodDaoJDBC implements IfoodDao {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
-			st = conn.prepareStatement("SELECT Id, OrderValue, DeliveryValue, Tax, ForIfood, PaymentType, PaymentValue FROM ifood ORDER BY Id");
+			st = conn.prepareStatement("SELECT Id, OrderValue, DeliveryValue, Tax, ForIfood, PaymentType, PaymentValue, category FROM ifood ORDER BY Id");
 
 			rs = st.executeQuery();
 
@@ -137,6 +145,7 @@ public class IfoodDaoJDBC implements IfoodDao {
 		obj.setTax(rs.getDouble("Tax"));
 		obj.setForIfood(rs.getDouble("ForIfood"));
 		obj.getPayment().setPaymentMethod(rs.getString("PaymentType"), rs.getDouble("PaymentValue"));
+		obj.setCategory(rs.getString("category"));
 		return obj;
 	}
 }

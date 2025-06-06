@@ -8,6 +8,7 @@ public class Ifood  extends Order implements Serializable {
 	private Double forIfood;
 	private Double tax;
 	private Integer serviceTax;
+	private String category;
 
 	private PaymentMethod payment = new PaymentMethod();
 
@@ -50,6 +51,14 @@ public class Ifood  extends Order implements Serializable {
 	
 	public void setServiceTax(Integer serviceTax) {
 		this.serviceTax = serviceTax;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public void taxForIfood(double value) {

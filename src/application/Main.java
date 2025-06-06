@@ -2,11 +2,13 @@ package application;
 
 import java.io.IOException;
 
+import gui.MainViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
+import model.services.IfoodService;
 
 public class Main extends Application {
 
@@ -19,6 +21,8 @@ public class Main extends Application {
 			ScrollPane scrollPane = loader.load();
 			scrollPane.setFitToHeight(true);
 			scrollPane.setFitToWidth(true);
+			MainViewController controller = loader.getController();
+			controller.setIfoodService(new IfoodService());
 			mainScene = new Scene(scrollPane);
 			primaryStage.setScene(mainScene);
 			primaryStage.setTitle("Sample JavaFX application");

@@ -25,33 +25,30 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.entities.Ifood;
+import model.entities.PV;
 import model.entities.Order;
-import model.services.IfoodService;
+import model.services.PVService;
 
-public class IfoodListController implements Initializable, DataChangeListener {
+public class PVListController implements Initializable, DataChangeListener {
 	
-	private IfoodService service;
-	
-	@FXML
-	private TableView<Ifood> tableViewIfood;
+	private PVService service;
 	
 	@FXML
-	private TableColumn<Ifood, Integer> tableColumnId;
+	private TableView<PV> tableViewPV;
 	
 	@FXML
-	private TableColumn<Ifood, Double> tableColumnOrderValue;
+	private TableColumn<PV, Integer> tableColumnId;
 	
 	@FXML
-	private TableColumn<Ifood, Double> tableColumnDeliveryValue;
+	private TableColumn<PV, Double> tableColumnOrderValue;
 	
 	@FXML
-	private TableColumn<Ifood, String> tableColumnCategory;
+	private TableColumn<PV, Double> tableColumnDeliveryValue;
 	
 	@FXML
-	private TableColumn<Ifood, String> tableColumnPaymentMethod;
+	private TableColumn<PV, String> tableColumnPaymentMethod;
 	
-	private ObservableList<Ifood> obsList;
+	private ObservableList<PV> obsList;
 	
 	@FXML
 	private Button btNew;
@@ -59,8 +56,8 @@ public class IfoodListController implements Initializable, DataChangeListener {
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
-		Ifood obj = new Ifood(new Order());
-		dialogForm(obj, "/gui/IfoodDialogForm.fxml", parentStage);
+		PV obj = new PV(new Order());
+		dialogForm(obj, "/gui/PVDialogForm.fxml", parentStage);
 	}
 
 	@Override
@@ -75,30 +72,29 @@ public class IfoodListController implements Initializable, DataChangeListener {
 		tableColumnDeliveryValue.setCellValueFactory(new PropertyValueFactory<>("DeliveryValue"));
 		Utils.formatTableColumnDouble(tableColumnDeliveryValue, 2);
 		tableColumnPaymentMethod.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPayment().getPaymentMethod()));
-		tableColumnCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
 		
 		Stage stage = (Stage)Main.getMainScene().getWindow();
-		tableViewIfood.prefHeightProperty().bind(stage.heightProperty());
+		tableViewPV.prefHeightProperty().bind(stage.heightProperty());
 	}
 	
 	public void updateTableView() {
 		if(service == null) {
 			throw new IllegalStateException();
 		}
-		List<Ifood> list = service.findAll();
+		List<PV> list = service.findAll();
 		obsList = FXCollections.observableArrayList(list);
-		tableViewIfood.setItems(obsList);
+		tableViewPV.setItems(obsList);
 	}
 	
-	private void dialogForm(Ifood obj, String absoluteView, Stage parentStage) {
+	private void dialogForm(PV obj, String absoluteView, Stage parentStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteView));
 			Pane pane = loader.load();
 			
-			IfoodFormController controller = loader.getController();
-			controller.setIfoodService(new IfoodService());
+			PVFormController controller = loader.getController();
+			controller.setPVService(new PVService());
 			controller.subscribeDataChangeListener(this);
-			controller.setIfood(obj);
+			controller.setPV(obj);
 			controller.updateFormData();
 			
 			Stage dialogStage = new Stage();
@@ -115,11 +111,11 @@ public class IfoodListController implements Initializable, DataChangeListener {
 		}
 	}
 
-	public IfoodService getService() {
+	public PVService getService() {
 		return service;
 	}
 
-	public void setService(IfoodService service) {
+	public void setService(PVService service) {
 		this.service = service;
 	}
 

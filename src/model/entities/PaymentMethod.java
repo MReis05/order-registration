@@ -12,6 +12,10 @@ public class PaymentMethod {
 	
 	public PaymentMethod() {
 	}
+	
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
 
 	public String getPaymentMethod() {
 		return paymentMethod;
