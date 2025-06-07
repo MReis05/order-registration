@@ -25,8 +25,8 @@ public class PVService {
 		}
 	}
 	
-	public void delete (Integer id) {
-		dao.deleteById(id);
+	public void delete (PV obj) {
+		dao.deleteById(obj.getId());
 	}
 	
 	public void resetAll() {

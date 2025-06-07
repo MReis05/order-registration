@@ -140,6 +140,10 @@ public class PVFormController implements Initializable {
 		}
 		obj.setDeliveryValue(Utils.tryParseToDouble(txtDeliveryValue.getText()));
 		
+		if(!exception.getErrors().isEmpty()) {
+			throw exception;
+		}
+		
 		return obj;
 	}
 

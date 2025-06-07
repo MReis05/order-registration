@@ -3,12 +3,15 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
+import db.DbException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,14 +22,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.entities.PV;
 import model.entities.Order;
+import model.entities.PV;
 import model.services.PVService;
 
 public class PVListController implements Initializable, DataChangeListener {
@@ -47,6 +52,9 @@ public class PVListController implements Initializable, DataChangeListener {
 	
 	@FXML
 	private TableColumn<PV, String> tableColumnPaymentMethod;
+	
+	@FXML
+	private TableColumn<PV, PV> tableColumnRemove;
 	
 	private ObservableList<PV> obsList;
 	
@@ -84,6 +92,7 @@ public class PVListController implements Initializable, DataChangeListener {
 		List<PV> list = service.findAll();
 		obsList = FXCollections.observableArrayList(list);
 		tableViewPV.setItems(obsList);
+		initRemoveButtons();
 	}
 	
 	private void dialogForm(PV obj, String absoluteView, Stage parentStage) {
@@ -122,7 +131,40 @@ public class PVListController implements Initializable, DataChangeListener {
 	@Override
 	public void dataChangeListeners() {
 		updateTableView();
-		
+	}
+
+	private void removeEntity(PV obj) {
+		Optional<ButtonType> result = Alerts.showConfirmation("Removendo Pedido", "Tem certeza que deseja apagar o pedido?");
+		if(result.get() == ButtonType.OK) {
+			if (service == null) {
+				throw new IllegalStateException("Serivce was null");
+			}
+			try {
+				service.delete(obj);
+				updateTableView();
+			}
+			catch (DbException e) {
+				Alerts.showAlert("Error removing object", null, e.getMessage(), AlertType.ERROR);
+			}
+		}
+	}
+
+	private void initRemoveButtons() {
+		tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnRemove.setCellFactory(param -> new TableCell<PV, PV>() {
+			private final Button button = new Button("remove");
+
+			@Override
+			protected void updateItem(PV obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(event -> removeEntity(obj));
+			}
+		});
 	}
 
 }

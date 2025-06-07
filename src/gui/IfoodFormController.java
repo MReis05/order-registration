@@ -155,14 +155,16 @@ public class IfoodFormController implements Initializable {
 		order.setDeliveryValue(Utils.tryParseToDouble(txtDeliveryValue.getText()));
 		if (comboBoxPayment.getValue() == "Dinheiro" || comboBoxPayment.getValue() == "Cartão" || comboBoxPayment.getValue() == "Pix" ) {
 			if (comboBoxCutQuestion.getValue() == "Sim") {
-				if (txtPaymentValue.getText() == null || txtPaymentValue.getText().trim().equals("")) {
+				if (txtPaymentValue.getText() == null || txtPaymentValue.getText().trim().equals("") || Utils.tryParseToDouble(txtPaymentValue.getText()) == 0.00) {
 					exception.addError("paymentValue", "Field can't be empty");
+					System.out.println("Entrou");
 				}
 				obj = new Ifood(order, Utils.tryParseToDouble(txtPaymentValue.getText()), comboBoxPayment.getValue());
 			}
 			else {
-				if (txtPaymentValue.getText() == null || txtPaymentValue.getText().trim().equals("")) {
-					exception.addError("paymentValue", "Field can't be empty");
+				if (txtOrderValue.getText() == null || txtOrderValue.getText().trim().equals("")) {
+					exception.addError("orderValue", "Field can't be empty");
+					System.out.println("Entrou");
 				}
 				obj = new Ifood(order, comboBoxPayment.getValue());
 			}
@@ -170,6 +172,10 @@ public class IfoodFormController implements Initializable {
 		else {
 			obj = new Ifood(order);
 			obj.getPayment().setPaymentMethod(comboBoxPayment.getValue());
+		}
+		
+		if(!exception.getErrors().isEmpty()) {
+			throw exception;
 		}
 		return obj;
 	}
