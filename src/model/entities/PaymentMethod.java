@@ -25,7 +25,7 @@ public class PaymentMethod {
         return new SimpleStringProperty(paymentMethod);
     }
 
-	public void setPaymentMethod(String paymentMethod, double value) {
+	public void setPaymentMethod(String paymentMethod, Double value) {
 		setPaymentValue(value);
 		this.paymentMethod = paymentMethod;
 	}

@@ -141,7 +141,7 @@ public class IfoodListController implements Initializable, DataChangeListener {
 	
 
 	private void removeEntity(Ifood obj) {
-		Optional<ButtonType> result = Alerts.showConfirmation("Removing Deoartment", "Are you sure to remove?");
+		Optional<ButtonType> result = Alerts.showConfirmation("Removendo Pedido", "Tem certeza que deseja apagar o pedido?");
 		if(result.get() == ButtonType.OK) {
 			if (service == null) {
 				throw new IllegalStateException("Serivce was null");
