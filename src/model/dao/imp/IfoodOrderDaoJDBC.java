@@ -10,20 +10,20 @@ import java.util.List;
 
 import db.Db;
 import db.DbException;
-import model.dao.IfoodDao;
-import model.entities.Ifood;
+import model.dao.IfoodOrderDao;
+import model.entities.IfoodOrder;
 import model.entities.Order;
 
-public class IfoodDaoJDBC implements IfoodDao {
+public class IfoodOrderDaoJDBC implements IfoodOrderDao {
 
 	private Connection conn;
 	
-	public IfoodDaoJDBC (Connection conn) {
+	public IfoodOrderDaoJDBC (Connection conn) {
 		this.conn = conn;
 	}
 
 	@Override
-	public void insert(Ifood obj) {
+	public void insert(IfoodOrder obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
@@ -33,11 +33,11 @@ public class IfoodDaoJDBC implements IfoodDao {
 
 			st.setDouble(1, obj.getOrderValue());
 			st.setDouble(2, obj.getDeliveryValue());
-			st.setDouble(3, obj.getTax());
-			if (obj.getForIfood() == null) {
-				obj.setForIfood(0.00);
+			st.setDouble(3, obj.getIfoodComission());
+			if (obj.getIfoodPaymentValue() == null) {
+				obj.setIfoodPaymentValue(0.00);
 			}
-			st.setDouble(4, obj.getForIfood());
+			st.setDouble(4, obj.getIfoodPaymentValue());
 			if (obj.getPayment().getPaymentValue() == null) {
 				obj.getPayment().setPaymentMethod("Ifood", 0.00);
                 st.setString(5, obj.getPayment().getPaymentMethod());
@@ -73,7 +73,7 @@ public class IfoodDaoJDBC implements IfoodDao {
 	}
 
 	@Override
-	public void update(Ifood obj) {
+	public void update(IfoodOrder obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement("UPDATE ifood "
@@ -82,8 +82,8 @@ public class IfoodDaoJDBC implements IfoodDao {
 
 			st.setDouble(1, obj.getOrderValue());
 			st.setDouble(2, obj.getDeliveryValue());
-			st.setDouble(3, obj.getTax());
-			st.setDouble(4, obj.getForIfood());
+			st.setDouble(3, obj.getIfoodComission());
+			st.setDouble(4, obj.getIfoodPaymentValue());
 			st.setString(5, obj.getPayment().getPaymentMethod());
 			st.setDouble(6, obj.getPayment().getPaymentValue());
 			st.setString(7, obj.getCategory());
@@ -116,7 +116,7 @@ public class IfoodDaoJDBC implements IfoodDao {
 	}
 
 	@Override
-	public List<Ifood> findAll() {
+	public List<IfoodOrder> findAll() {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
@@ -124,10 +124,10 @@ public class IfoodDaoJDBC implements IfoodDao {
 
 			rs = st.executeQuery();
 
-			List<Ifood> list = new ArrayList<>();
+			List<IfoodOrder> list = new ArrayList<>();
             
 			while(rs.next()) {
-				Ifood obj = InstatiateIfood(rs);
+				IfoodOrder obj = InstatiateIfoodOrder(rs);
 				list.add(obj);
 			}
 			return list;
@@ -140,10 +140,10 @@ public class IfoodDaoJDBC implements IfoodDao {
 		}
 	}
 
-	private Ifood InstatiateIfood(ResultSet rs) throws SQLException {
-		Ifood obj = new Ifood(new Order(rs.getInt("Id"), rs.getDouble("OrderValue"), rs.getDouble("DeliveryValue")));
-		obj.setTax(rs.getDouble("Tax"));
-		obj.setForIfood(rs.getDouble("ForIfood"));
+	private IfoodOrder InstatiateIfoodOrder(ResultSet rs) throws SQLException {
+		IfoodOrder obj = new IfoodOrder(new Order(rs.getInt("Id"), rs.getDouble("OrderValue"), rs.getDouble("DeliveryValue")));
+		obj.setIfoodComission(rs.getDouble("Tax"));
+		obj.setIfoodPaymentValue(rs.getDouble("ForIfood"));
 		obj.getPayment().setPaymentMethod(rs.getString("PaymentType"), rs.getDouble("PaymentValue"));
 		obj.setCategory(rs.getString("category"));
 		return obj;

@@ -18,22 +18,22 @@ public class ResultsController implements Initializable {
 	private Label labelIfoodTotal;
 	
 	@FXML
-	private Label labelPVTotal;
+	private Label labelDirectOrderTotal;
 	
 	@FXML
 	private Label labelDeliveryTotal;
 	
 	@FXML
-	private Label labelForIfoodTotal;
+	private Label labelIfoodPaymentValueTotal;
 	
 	@FXML
-	private Label labelTaxTotal;
+	private Label labelIfoodComissionTotal;
 	
 	@FXML
-	private Label labelTaxOfServicePTotal;
+	private Label labelServiceFeePTotal;
 	
 	@FXML
-	private Label labelTaxOfServiceTTotal;
+	private Label labelServiceFeeTTotal;
 	
 	@FXML
 	private Label labelCashTotal;
@@ -48,12 +48,12 @@ public class ResultsController implements Initializable {
 		Set<String> fields = results.keySet();
 		labelTotal.setText((fields.contains("totalValue") ? String.format("%.2f", results.get("totalValue")) : ""));
 		labelIfoodTotal.setText((fields.contains("ifoodTotal") ? String.format("%.2f", results.get("ifoodTotal")) : ""));
-		labelPVTotal.setText((fields.contains("pvTotal") ? String.format("%.2f", results.get("pvTotal")) : ""));
+		labelDirectOrderTotal.setText((fields.contains("directOrderTotal") ? String.format("%.2f", results.get("directOrderTotal")) : ""));
 		labelDeliveryTotal.setText((fields.contains("deliveryTotal") ? String.format("%.2f", results.get("deliveryTotal")) : ""));
-		labelForIfoodTotal.setText((fields.contains("forIfoodTotal") ? String.format("%.2f", results.get("forIfoodTotal")) : ""));
-		labelTaxTotal.setText((fields.contains("taxTotal") ? String.format("%.2f", results.get("taxTotal")) : ""));
-		labelTaxOfServicePTotal.setText((fields.contains("taxOfServicePTotal") ? String.valueOf(((Double)results.get("taxOfServicePTotal")).intValue()) : ""));
-		labelTaxOfServiceTTotal.setText((fields.contains("taxOfServicePTotal") ? String.valueOf(((Double)results.get("taxOfServiceTTotal")).intValue()) : ""));
+		labelIfoodPaymentValueTotal.setText((fields.contains("ifoodPaymentValueTotal") ? String.format("%.2f", results.get("ifoodPaymentValueTotal")) : ""));
+		labelIfoodComissionTotal.setText((fields.contains("ifoodComissionTotal") ? String.format("%.2f", results.get("ifoodComissionTotal")) : ""));
+		labelServiceFeePTotal.setText((fields.contains("serviceFeePTotal") ? String.valueOf(((Double)results.get("serviceFeePTotal")).intValue()) : ""));
+		labelServiceFeeTTotal.setText((fields.contains("serviceFeePTotal") ? String.valueOf(((Double)results.get("serviceFeeTTotal")).intValue()) : ""));
 		labelCashTotal.setText((fields.contains("cashTotal") ? String.format("%.2f", results.get("cashTotal")) : ""));
 		labelCardTotal.setText((fields.contains("cardTotal") ? String.format("%.2f", results.get("cardTotal")) : ""));
 		labelPixTotal.setText((fields.contains("pixTotal") ? String.format("%.2f", results.get("pixTotal")) : ""));
@@ -62,5 +62,4 @@ public class ResultsController implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 	}
-
 }

@@ -10,24 +10,24 @@ import java.util.List;
 
 import db.Db;
 import db.DbException;
-import model.dao.PVDao;
+import model.dao.DirectOrderDao;
 import model.entities.Order;
-import model.entities.PV;
+import model.entities.DirectOrder;
 
-public class PVDaoJDBC implements PVDao {
+public class DirectOrderDaoJDBC implements DirectOrderDao {
 
 	private Connection conn;
 	
-	public PVDaoJDBC (Connection conn) {
+	public DirectOrderDaoJDBC (Connection conn) {
 		this.conn = conn;
 	}
 	
 	@Override
-	public void insert(PV obj) {
+	public void insert(DirectOrder obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-					"INSERT INTO pv " + "(OrderValue, DeliveryValue, PaymentType) "
+					"INSERT INTO directorder " + "(OrderValue, DeliveryValue, PaymentType) "
 							+ "VALUES " + "(?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 
@@ -56,10 +56,10 @@ public class PVDaoJDBC implements PVDao {
 	}
 
 	@Override
-	public void update(PV obj) {
+	public void update(DirectOrder obj) {
 		PreparedStatement st = null;
 		try {
-			st = conn.prepareStatement("UPDATE pv "
+			st = conn.prepareStatement("UPDATE directorder "
 					+ "SET OrderValue = ?, DeliveryValue = ?, PaymentType = ? "
 					+ "WHERE Id = ?");
 
@@ -82,7 +82,7 @@ public class PVDaoJDBC implements PVDao {
 	public void deleteById(Integer id) {
 		PreparedStatement st = null;
 		try {
-			st = conn.prepareStatement("DELETE FROM pv WHERE Id = ?");
+			st = conn.prepareStatement("DELETE FROM directorder WHERE Id = ?");
 
 			st.setInt(1, id);
 
@@ -96,18 +96,18 @@ public class PVDaoJDBC implements PVDao {
 	}
 
 	@Override
-	public List<PV> findAll() {
+	public List<DirectOrder> findAll() {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
-			st = conn.prepareStatement("SELECT Id, OrderValue, DeliveryValue, PaymentType FROM pv ORDER BY Id");
+			st = conn.prepareStatement("SELECT Id, OrderValue, DeliveryValue, PaymentType FROM directorder ORDER BY Id");
 
 			rs = st.executeQuery();
 
-			List<PV> list = new ArrayList<>();
+			List<DirectOrder> list = new ArrayList<>();
             
 			while(rs.next()) {
-				PV obj = InstatiatePV(rs);
+				DirectOrder obj = InstatiateDirectOrder(rs);
 				list.add(obj);
 			}
 			return list;
@@ -120,8 +120,8 @@ public class PVDaoJDBC implements PVDao {
 		}
 	}
 	
-	private PV InstatiatePV(ResultSet rs) throws SQLException {
-		PV obj = new PV(new Order(rs.getInt("Id"), rs.getDouble("OrderValue"), rs.getDouble("DeliveryValue")), rs.getString("PaymentType"));
+	private DirectOrder InstatiateDirectOrder(ResultSet rs) throws SQLException {
+		DirectOrder obj = new DirectOrder(new Order(rs.getInt("Id"), rs.getDouble("OrderValue"), rs.getDouble("DeliveryValue")), rs.getString("PaymentType"));
 		return obj;
 	}
 
@@ -129,7 +129,7 @@ public class PVDaoJDBC implements PVDao {
 	public void resetAll() {
 		PreparedStatement st = null;
 		try {
-			st = conn.prepareStatement("TRUNCATE TABLE pv");
+			st = conn.prepareStatement("TRUNCATE TABLE directorder");
 
 			st.executeUpdate();
 		} catch (SQLException e) {

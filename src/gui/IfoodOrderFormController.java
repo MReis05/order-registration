@@ -25,16 +25,16 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
-import model.entities.Ifood;
+import model.entities.IfoodOrder;
 import model.entities.Order;
 import model.exceptions.ValidationExceptions;
-import model.services.IfoodService;
+import model.services.IfoodOrderService;
 
-public class IfoodFormController implements Initializable {
+public class IfoodOrderFormController implements Initializable {
 	
-	private Ifood entity;
+	private IfoodOrder entity;
 	
-	private IfoodService service;
+	private IfoodOrderService service;
 	
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
@@ -94,7 +94,7 @@ public class IfoodFormController implements Initializable {
 			setErrorMessages(e.getErrors());
 		}
 		catch (DbException e) {
-			Alerts.showAlert("Error in saving Ifood", null, e.getMessage(), AlertType.ERROR);
+			Alerts.showAlert("Error in saving IfoodOrder", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 	
@@ -113,11 +113,11 @@ public class IfoodFormController implements Initializable {
 		Utils.currentStage(event).close();
 	}
 	
-	public void setIfood(Ifood entity) {
+	public void setIfoodOrder(IfoodOrder entity) {
 		this.entity = entity;
 	}
 	
-	public void setIfoodService(IfoodService service) {
+	public void setIfoodOrderService(IfoodOrderService service) {
 		this.service = service;
 	}
 	
@@ -136,9 +136,9 @@ public class IfoodFormController implements Initializable {
 		initializeComboBoxPayment();
 	}
 	
-	public Ifood getFormData() {
+	public IfoodOrder getFormData() {
 		Order order = new Order();
-		Ifood obj = new Ifood(new Order());
+		IfoodOrder obj = new IfoodOrder(new Order());
 		
 		ValidationExceptions exception = new ValidationExceptions("Validation error");
 		
@@ -159,18 +159,18 @@ public class IfoodFormController implements Initializable {
 					exception.addError("paymentValue", "Field can't be empty");
 					System.out.println("Entrou");
 				}
-				obj = new Ifood(order, Utils.tryParseToDouble(txtPaymentValue.getText()), comboBoxPayment.getValue());
+				obj = new IfoodOrder(order, Utils.tryParseToDouble(txtPaymentValue.getText()), comboBoxPayment.getValue());
 			}
 			else {
 				if (txtOrderValue.getText() == null || txtOrderValue.getText().trim().equals("")) {
 					exception.addError("orderValue", "Field can't be empty");
 					System.out.println("Entrou");
 				}
-				obj = new Ifood(order, comboBoxPayment.getValue());
+				obj = new IfoodOrder(order, comboBoxPayment.getValue());
 			}
 		}
 		else {
-			obj = new Ifood(order);
+			obj = new IfoodOrder(order);
 			obj.getPayment().setPaymentMethod(comboBoxPayment.getValue());
 		}
 		

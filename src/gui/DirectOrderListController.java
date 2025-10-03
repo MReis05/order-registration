@@ -30,87 +30,82 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.entities.Ifood;
 import model.entities.Order;
-import model.services.IfoodService;
+import model.entities.DirectOrder;
+import model.services.DirectOrderService;
 
-public class IfoodListController implements Initializable, DataChangeListener {
-
-	private IfoodService service;
-
+public class DirectOrderListController implements Initializable, DataChangeListener {
+	
+	private DirectOrderService service;
+	
 	@FXML
-	private TableView<Ifood> tableViewIfood;
-
+	private TableView<DirectOrder> tableViewDirectOrder;
+	
 	@FXML
-	private TableColumn<Ifood, Integer> tableColumnId;
-
+	private TableColumn<DirectOrder, Integer> tableColumnId;
+	
 	@FXML
-	private TableColumn<Ifood, Double> tableColumnOrderValue;
-
+	private TableColumn<DirectOrder, Double> tableColumnOrderValue;
+	
 	@FXML
-	private TableColumn<Ifood, Double> tableColumnDeliveryValue;
-
+	private TableColumn<DirectOrder, Double> tableColumnDeliveryValue;
+	
 	@FXML
-	private TableColumn<Ifood, String> tableColumnCategory;
-
+	private TableColumn<DirectOrder, String> tableColumnPaymentMethod;
+	
 	@FXML
-	private TableColumn<Ifood, String> tableColumnPaymentMethod;
-
-	@FXML
-	private TableColumn<Ifood, Ifood> tableColumnRemove;
-
-	private ObservableList<Ifood> obsList;
-
+	private TableColumn<DirectOrder, DirectOrder> tableColumnRemove;
+	
+	private ObservableList<DirectOrder> obsList;
+	
 	@FXML
 	private Button btNew;
-
+	
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
-		Ifood obj = new Ifood(new Order());
-		dialogForm(obj, "/gui/IfoodDialogForm.fxml", parentStage);
+		DirectOrder obj = new DirectOrder(new Order());
+		dialogForm(obj, "/gui/DirectOrderDialogForm.fxml", parentStage);
 	}
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		initializaNodes();
 	}
-
+	
 	public void initializaNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnOrderValue.setCellValueFactory(new PropertyValueFactory<>("OrderValue"));
 		Utils.formatTableColumnDouble(tableColumnOrderValue, 2);
 		tableColumnDeliveryValue.setCellValueFactory(new PropertyValueFactory<>("DeliveryValue"));
 		Utils.formatTableColumnDouble(tableColumnDeliveryValue, 2);
-		tableColumnPaymentMethod.setCellValueFactory(
-				cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPayment().getPaymentMethod()));
-		tableColumnCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
-
-		Stage stage = (Stage) Main.getMainScene().getWindow();
-		tableViewIfood.prefHeightProperty().bind(stage.heightProperty());
+		tableColumnPaymentMethod.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPayment().getPaymentMethod()));
+		
+		Stage stage = (Stage)Main.getMainScene().getWindow();
+		tableViewDirectOrder.prefHeightProperty().bind(stage.heightProperty());
 	}
-
+	
 	public void updateTableView() {
-		if (service == null) {
+		if(service == null) {
 			throw new IllegalStateException();
 		}
-		List<Ifood> list = service.findAll();
+		List<DirectOrder> list = service.findAll();
 		obsList = FXCollections.observableArrayList(list);
-		tableViewIfood.setItems(obsList);
+		tableViewDirectOrder.setItems(obsList);
 		initRemoveButtons();
 	}
-
-	private void dialogForm(Ifood obj, String absoluteView, Stage parentStage) {
+	
+	private void dialogForm(DirectOrder obj, String absoluteView, Stage parentStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteView));
 			Pane pane = loader.load();
-
-			IfoodFormController controller = loader.getController();
-			controller.setIfoodService(new IfoodService());
+			
+			DirectOrderFormController controller = loader.getController();
+			controller.setDirectOrderService(new DirectOrderService());
 			controller.subscribeDataChangeListener(this);
-			controller.setIfood(obj);
+			controller.setDirectOrder(obj);
 			controller.updateFormData();
-
+			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Entre com os dados do pedido");
 			dialogStage.setScene(new Scene(pane));
@@ -118,29 +113,27 @@ public class IfoodListController implements Initializable, DataChangeListener {
 			dialogStage.initOwner(parentStage);
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.showAndWait();
-
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			Alerts.showAlert("IOException", "Error in loading view", e.getMessage(), AlertType.ERROR);
 		}
 	}
 
-	public IfoodService getService() {
+	public DirectOrderService getService() {
 		return service;
 	}
 
-	public void setService(IfoodService service) {
+	public void setService(DirectOrderService service) {
 		this.service = service;
 	}
 
 	@Override
 	public void dataChangeListeners() {
 		updateTableView();
-
 	}
-	
 
-	private void removeEntity(Ifood obj) {
+	private void removeEntity(DirectOrder obj) {
 		Optional<ButtonType> result = Alerts.showConfirmation("Removendo Pedido", "Tem certeza que deseja apagar o pedido?");
 		if(result.get() == ButtonType.OK) {
 			if (service == null) {
@@ -158,11 +151,11 @@ public class IfoodListController implements Initializable, DataChangeListener {
 
 	private void initRemoveButtons() {
 		tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-		tableColumnRemove.setCellFactory(param -> new TableCell<Ifood, Ifood>() {
+		tableColumnRemove.setCellFactory(param -> new TableCell<DirectOrder, DirectOrder>() {
 			private final Button button = new Button("remove");
 
 			@Override
-			protected void updateItem(Ifood obj, boolean empty) {
+			protected void updateItem(DirectOrder obj, boolean empty) {
 				super.updateItem(obj, empty);
 				if (obj == null) {
 					setGraphic(null);

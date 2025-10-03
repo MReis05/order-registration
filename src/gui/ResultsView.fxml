@@ -104,7 +104,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelForIfoodTotal" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <Label fx:id="labelIfoodPaymentValueTotal" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -112,7 +112,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelTaxTotal" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <Label fx:id="labelIfoodComissionTotal" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -120,7 +120,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelTaxOfServicePTotal" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <Label fx:id="labelServiceFeePTotal" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -128,7 +128,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label fx:id="labelTaxOfServiceTTotal" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <Label fx:id="labelServiceFeeTTotal" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
@@ -184,7 +184,7 @@
                   <Insets left="20.0" />
                </GridPane.margin>
             </Label>
-            <Label fx:id="labelPVTotal" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Label fx:id="labelDirectOrderTotal" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>
