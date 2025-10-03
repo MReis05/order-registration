@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.VBox?>
 
 <ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainViewController">
@@ -16,8 +16,8 @@
               <menus>
                 <Menu mnemonicParsing="false" text="Registration">
                   <items>
-                    <MenuItem fx:id="menuItemIfood" mnemonicParsing="false" onAction="#onMenuItemIfoodAction" text="Ifood" />
-                        <MenuItem fx:id="menuItemPV" mnemonicParsing="false" onAction="#onMenuItemPVAction" text="PV" />
+                    <MenuItem fx:id="menuItemIfoodOrder" mnemonicParsing="false" onAction="#onMenuItemIfoodOrderAction" text="Ifood" />
+                        <MenuItem fx:id="menuItemDirectOrder" mnemonicParsing="false" onAction="#onMenuItemDirectOrderAction" text="PV" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="Results">
@@ -27,11 +27,11 @@
                   </Menu>
               </menus>
             </MenuBar>
-            <Button fx:id="btReset" mnemonicParsing="false" onAction="#onBtResetAllAction" text="Reset">
-               <VBox.margin>
-                  <Insets left="10.0" top="10.0" />
-               </VBox.margin>
-            </Button>
+            <ToolBar>
+               <items>
+                  <Button fx:id="btReset" mnemonicParsing="false" onAction="#onBtResetAllAction" text="Reset" />
+               </items>
+            </ToolBar>
          </children>
       </VBox>
    </content>

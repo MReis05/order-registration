@@ -25,16 +25,16 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
-import model.entities.PV;
+import model.entities.DirectOrder;
 import model.entities.Order;
 import model.exceptions.ValidationExceptions;
-import model.services.PVService;
+import model.services.DirectOrderService;
 
-public class PVFormController implements Initializable {
+public class DirectOrderFormController implements Initializable {
 	
-	private PV entity;
+	private DirectOrder entity;
 	
-	private PVService service;
+	private DirectOrderService service;
 	
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
@@ -83,7 +83,7 @@ public class PVFormController implements Initializable {
 			setErrorMessages(e.getErrors());
 		}
 		catch (DbException e) {
-			Alerts.showAlert("Error in saving PV", null, e.getMessage(), AlertType.ERROR);
+			Alerts.showAlert("Error in saving DirectOrder", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 	
@@ -102,11 +102,11 @@ public class PVFormController implements Initializable {
 		Utils.currentStage(event).close();
 	}
 	
-	public void setPV(PV entity) {
+	public void setDirectOrder(DirectOrder entity) {
 		this.entity = entity;
 	}
 	
-	public void setPVService(PVService service) {
+	public void setDirectOrderService(DirectOrderService service) {
 		this.service = service;
 	}
 	
@@ -123,8 +123,8 @@ public class PVFormController implements Initializable {
 		initializeComboBoxPayment();
 	}
 	
-	public PV getFormData() {
-		PV obj = new PV(new Order());
+	public DirectOrder getFormData() {
+		DirectOrder obj = new DirectOrder(new Order());
 		
 		ValidationExceptions exception = new ValidationExceptions("Validation error");
 		

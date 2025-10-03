@@ -8,8 +8,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
-import model.services.IfoodService;
-import model.services.PVService;
+import model.services.DirectOrderService;
+import model.services.IfoodOrderService;
 
 public class Main extends Application {
 
@@ -23,8 +23,8 @@ public class Main extends Application {
 			scrollPane.setFitToHeight(true);
 			scrollPane.setFitToWidth(true);
 			MainViewController controller = loader.getController();
-			controller.setIfoodService(new IfoodService());
-			controller.setPVService(new PVService());
+			controller.setIfoodOrderService(new IfoodOrderService());
+			controller.setDirectOrderService(new DirectOrderService());
 			mainScene = new Scene(scrollPane);
 			primaryStage.setScene(mainScene);
 			primaryStage.setTitle("Sample JavaFX application");
@@ -36,6 +36,10 @@ public class Main extends Application {
 
 	public static Scene getMainScene() {
 		return mainScene;
+	}
+	
+	public static void main(String[] args) {
+		launch(args);
 	}
 
 }

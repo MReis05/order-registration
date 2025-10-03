@@ -21,20 +21,20 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import model.services.IfoodService;
-import model.services.PVService;
+import model.services.DirectOrderService;
+import model.services.IfoodOrderService;
 
 public class MainViewController implements Initializable {
 	
-	private IfoodService ifoodService;
+	private IfoodOrderService ifoodOrderService;
 	
-	private PVService pvService;
+	private DirectOrderService directOrderService;
 
 	@FXML
-	private MenuItem menuItemIfood;
+	private MenuItem menuItemIfoodOrder;
 	
 	@FXML
-	private MenuItem menuItemPV;
+	private MenuItem menuItemDirectOrder;
 	
 	@FXML
 	private MenuItem menuItemResult;
@@ -43,17 +43,17 @@ public class MainViewController implements Initializable {
 	private Button btReset;
 	
 	@FXML
-	public void onMenuItemIfoodAction() {
-		loadView("/gui/IfoodListView.fxml", (IfoodListController controller) -> {
-			controller.setService(new IfoodService());
+	public void onMenuItemIfoodOrderAction() {
+		loadView("/gui/IfoodOrderListView.fxml", (IfoodOrderListController controller) -> {
+			controller.setService(new IfoodOrderService());
 			controller.updateTableView();
 		});
 	}
 	
 	@FXML
-	public void onMenuItemPVAction() {
-		loadView("/gui/PVListView.fxml", (PVListController controller) -> {
-			controller.setService(new PVService());
+	public void onMenuItemDirectOrderAction() {
+		loadView("/gui/DirectOrderListView.fxml", (DirectOrderListController controller) -> {
+			controller.setService(new DirectOrderService());
 			controller.updateTableView();
 		});	}
 	
@@ -66,8 +66,8 @@ public class MainViewController implements Initializable {
 	public void onBtResetAllAction() {
 		 Optional<ButtonType> result = Alerts.showConfirmation("Redefinir Dados", "Tem certeza que deseja apagar todos os dados de iFood e PV?");
 		    if (result.isPresent() && result.get() == ButtonType.OK) {
-		        ifoodService.resetAll();
-		        pvService.resetAll();
+		        ifoodOrderService.resetAll();
+		        directOrderService.resetAll();
 		        Alerts.showAlert("Sucesso", null, "Todos os dados foram redefinidos.", AlertType.INFORMATION);
 		    }
 	}
@@ -81,8 +81,9 @@ public class MainViewController implements Initializable {
 			VBox mainVbox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
 
 			Node mainMenu = mainVbox.getChildren().get(0);
+			Node resetBt = mainVbox.getChildren().get(1);
 			mainVbox.getChildren().clear();
-			mainVbox.getChildren().add(mainMenu);
+			mainVbox.getChildren().addAll(mainMenu, resetBt);
 			mainVbox.getChildren().addAll(newVBox.getChildren());
 			T controller = loader.getController();
 			consumer.accept(controller);
@@ -104,8 +105,9 @@ public class MainViewController implements Initializable {
 			VBox mainVbox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
 			
 			Node mainMenu = mainVbox.getChildren().get(0);
+			Node resetBt = mainVbox.getChildren().get(1);
 			mainVbox.getChildren().clear();
-			mainVbox.getChildren().add(mainMenu);
+			mainVbox.getChildren().addAll(mainMenu, resetBt);
 			mainVbox.getChildren().addAll(pane.getChildren());
 			
 		} catch (IOException e) {
@@ -115,8 +117,8 @@ public class MainViewController implements Initializable {
 	}
 	
 	public Map<String, Double> result(){
-		Map<String, Double> result = ifoodService.total();
-		Map<String, Double> pv = pvService.total();
+		Map<String, Double> result = ifoodOrderService.total();
+		Map<String, Double> pv = directOrderService.total();
 		
 		for (String key : pv.keySet()) {
 			double value = 0.00;
@@ -133,12 +135,12 @@ public class MainViewController implements Initializable {
 		return result;
 	}
 	
-	public void setIfoodService(IfoodService service) {
-		this.ifoodService = service;
+	public void setIfoodOrderService(IfoodOrderService service) {
+		this.ifoodOrderService = service;
 	}
 	
-	public void setPVService(PVService service) {
-		this.pvService = service;
+	public void setDirectOrderService(DirectOrderService service) {
+		this.directOrderService = service;
 	}
 
 	@Override

@@ -5,18 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 import model.dao.DaoFactory;
-import model.dao.PVDao;
-import model.entities.PV;
+import model.dao.DirectOrderDao;
+import model.entities.DirectOrder;
 
-public class PVService {
+public class DirectOrderService {
 
-	private PVDao dao = DaoFactory.createPVDao();
+	private DirectOrderDao dao = DaoFactory.createDirectOrderDao();
 	
-	public List<PV> findAll (){
+	public List<DirectOrder> findAll (){
 		return dao.findAll();
 	}
 	
-	public void saveOrUpdate (PV obj) {
+	public void saveOrUpdate (DirectOrder obj) {
 		if (obj.getId() == null) {
 			dao.insert(obj);
 		}
@@ -25,7 +25,7 @@ public class PVService {
 		}
 	}
 	
-	public void delete (PV obj) {
+	public void delete (DirectOrder obj) {
 		dao.deleteById(obj.getId());
 	}
 	
@@ -34,18 +34,18 @@ public class PVService {
 	}
 	
 	public Map<String, Double> total(){
-		List<PV> list = dao.findAll();
+		List<DirectOrder> list = dao.findAll();
 		Map<String, Double> map = new LinkedHashMap<>();
 		double totalValue = 0.00;
-		double pvTotal = 0.00;
+		double directOrderTotal = 0.00;
 		double deliveryTotal = 0.00;
 		double cashTotal = 0.00;
 		double cardTotal = 0.00;
 		double pixTotal = 0.00;
 		
-		for(PV pv : list) {
+		for(DirectOrder pv : list) {
 			totalValue += pv.getOrderValue();
-			pvTotal += pv.getOrderValue();
+			directOrderTotal += pv.getOrderValue();
 			deliveryTotal += pv.getDeliveryValue();
 			switch(pv.getPayment().getPaymentMethod()) {
 			case "Dinheiro":
@@ -59,7 +59,7 @@ public class PVService {
 			}
 		}
 		map.put("totalValue", totalValue);
-		map.put("pvTotal", pvTotal);
+		map.put("directOrderTotal", directOrderTotal);
 		map.put("deliveryTotal", deliveryTotal);
 		map.put("cashTotal", cashTotal);
 		map.put("cardTotal", cardTotal);
