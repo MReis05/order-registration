@@ -10,6 +10,7 @@ import application.Main;
 import db.DbException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
+import gui.util.ImageManager;
 import gui.util.Utils;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -27,6 +28,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -70,7 +72,7 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 		IfoodOrder obj = new IfoodOrder(new Order());
 		dialogForm(obj, "/gui/IfoodOrderDialogForm.fxml", parentStage);
 	}
-
+	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		initializaNodes();
@@ -88,6 +90,11 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewIfoodOrder.prefHeightProperty().bind(stage.heightProperty());
+		
+		ImageView plus_sign = new ImageView(ImageManager.getImage("add"));
+		plus_sign.setFitHeight(23);
+		plus_sign.setFitWidth(23);
+		btNew.setGraphic(plus_sign);
 	}
 
 	public void updateTableView() {
@@ -114,6 +121,8 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Entre com os dados do pedido");
 			dialogStage.setScene(new Scene(pane));
+			dialogStage.getScene().getStylesheets().add(getClass().getResource("/application/application.css").toExternalForm());
+			dialogStage.getIcons().add(ImageManager.getImage("Order-history"));
 			dialogStage.setResizable(false);
 			dialogStage.initOwner(parentStage);
 			dialogStage.initModality(Modality.WINDOW_MODAL);
@@ -138,28 +147,29 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 		updateTableView();
 
 	}
-	
 
 	private void removeEntity(IfoodOrder obj) {
-		Optional<ButtonType> result = Alerts.showConfirmation("Removendo Pedido", "Tem certeza que deseja apagar o pedido?");
-		if(result.get() == ButtonType.OK) {
+		Optional<ButtonType> delete = Alerts.showConfirmation("Removendo Pedido",
+				"Tem certeza que deseja apagar o pedido?");
+		if (delete.get() == ButtonType.OK) {
 			if (service == null) {
 				throw new IllegalStateException("Serivce was null");
 			}
 			try {
 				service.delete(obj);
+				Alerts.showAlert("Sucesso", "Pedido removido com sucesso", null, AlertType.INFORMATION);
 				updateTableView();
-			}
-			catch (DbException e) {
+			} catch (DbException e) {
 				Alerts.showAlert("Error removing object", null, e.getMessage(), AlertType.ERROR);
 			}
 		}
 	}
-
+	
 	private void initRemoveButtons() {
 		tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		tableColumnRemove.setCellFactory(param -> new TableCell<IfoodOrder, IfoodOrder>() {
 			private final Button button = new Button("remove");
+			
 
 			@Override
 			protected void updateItem(IfoodOrder obj, boolean empty) {
@@ -173,5 +183,4 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 			}
 		});
 	}
-
 }

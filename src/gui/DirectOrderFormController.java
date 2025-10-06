@@ -83,7 +83,7 @@ public class DirectOrderFormController implements Initializable {
 			setErrorMessages(e.getErrors());
 		}
 		catch (DbException e) {
-			Alerts.showAlert("Error in saving DirectOrder", null, e.getMessage(), AlertType.ERROR);
+			Alerts.showAlert("Error in saving Direct Order", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 	

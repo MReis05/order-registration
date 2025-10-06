@@ -2,175 +2,252 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="380.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ResultsController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="446.0" prefWidth="641.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ResultsController">
    <children>
-      <GridPane gridLinesVisible="true" layoutY="9.0" prefHeight="316.0" prefWidth="398.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="9.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="168.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="0.0" prefWidth="42.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+      <GridPane gridLinesVisible="true" prefHeight="387.0" prefWidth="398.0" styleClass="results-grid">
+         <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="210.0" minWidth="10.0" prefWidth="168.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="0.0" prefWidth="42.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="10.0" percentHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+         </rowConstraints>
          <children>
-            <Label alignment="CENTER" text="Total" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-               <padding>
-                  <Insets left="20.0" />
-               </padding>
+            <HBox fillHeight="false" styleClass="table" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.vgrow="ALWAYS">
+               <children>
+                  <Label alignment="CENTER" styleClass="label-header-left" text="Total" textAlignment="CENTER">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
-            </Label>
-            <Label alignment="CENTER" text="Pelo Ifood" textAlignment="CENTER" GridPane.rowIndex="3">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
                <padding>
-                  <Insets left="19.0" />
-               </padding>
-            </Label>
-            <Label alignment="CENTER" text="Taxa" GridPane.rowIndex="4">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-               <padding>
-                  <Insets left="19.0" />
-               </padding>
-            </Label>
-            <Label text="Taxa de Serviço P" GridPane.rowIndex="5">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-               <padding>
-                  <Insets left="19.0" />
-               </padding>
-            </Label>
-            <Label text="Taxa de Serviço T" textAlignment="CENTER" GridPane.rowIndex="6">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets left="19.0" />
-               </GridPane.margin>
-            </Label>
-            <Label text="Dinheiro" GridPane.rowIndex="7">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets left="19.0" />
-               </GridPane.margin>
-            </Label>
-            <Label text="Cartão" GridPane.rowIndex="8">
-               <GridPane.margin>
-                  <Insets left="19.0" />
-               </GridPane.margin>
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label text="Pix" GridPane.rowIndex="9">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets left="19.0" />
-               </GridPane.margin>
-            </Label>
-            <Label fx:id="labelTotal" textAlignment="CENTER" GridPane.columnIndex="1">
-               <GridPane.margin>
                   <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <HBox styleClass="table-odd" GridPane.columnSpan="2" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets />
                </GridPane.margin>
+               <children>
+                  <Label styleClass="label-header-left" text="Ifood">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <HBox styleClass="table" GridPane.columnSpan="2" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <children>
+                  <Label styleClass="label-header-left" text="PV">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <HBox styleClass="table-odd" GridPane.columnSpan="2" GridPane.rowIndex="3">
+               <children>
+                  <Label alignment="CENTER" styleClass="label-header-left" text="Pelo Ifood" textAlignment="CENTER">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <HBox styleClass="table" GridPane.columnSpan="2" GridPane.rowIndex="4">
+               <children>
+                  <Label alignment="CENTER" styleClass="label-header-left" text="Taxa">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <HBox styleClass="table-odd" GridPane.columnSpan="2" GridPane.rowIndex="5">
+               <children>
+                  <Label styleClass="label-header-left" text="Taxa de Serviço P">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <HBox styleClass="table" GridPane.columnSpan="2" GridPane.rowIndex="6">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <children>
+                  <Label styleClass="label-header-left" text="Taxa de Serviço T" textAlignment="CENTER">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <HBox styleClass="table-odd" GridPane.columnSpan="2" GridPane.rowIndex="7">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <children>
+                  <Label styleClass="label-header-left" text="Dinheiro">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <HBox styleClass="table" GridPane.columnSpan="2" GridPane.rowIndex="8">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <children>
+                  <Label styleClass="label-header-left" text="Cartão">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <HBox styleClass="table-odd" GridPane.columnSpan="2" GridPane.rowIndex="9">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <children>
+                  <Label styleClass="label-header-left" text="Pix">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <HBox styleClass="table" GridPane.columnSpan="2" GridPane.rowIndex="10">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <children>
+                  <Label styleClass="label-header-left" text="Entregas">
+                     <HBox.margin>
+                        <Insets top="4.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+            <Label fx:id="labelTotal" textAlignment="CENTER" GridPane.columnIndex="1">
                <font>
                   <Font size="18.0" />
                </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
             </Label>
             <Label fx:id="labelIfoodPaymentValueTotal" GridPane.columnIndex="1" GridPane.rowIndex="3">
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
                <font>
                   <Font size="18.0" />
                </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
             </Label>
             <Label fx:id="labelIfoodComissionTotal" GridPane.columnIndex="1" GridPane.rowIndex="4">
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
                <font>
                   <Font size="18.0" />
                </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
             </Label>
             <Label fx:id="labelServiceFeePTotal" GridPane.columnIndex="1" GridPane.rowIndex="5">
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
                <font>
                   <Font size="18.0" />
                </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
             </Label>
             <Label fx:id="labelServiceFeeTTotal" GridPane.columnIndex="1" GridPane.rowIndex="6">
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
                <font>
                   <Font size="18.0" />
                </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
             </Label>
             <Label fx:id="labelCashTotal" GridPane.columnIndex="1" GridPane.rowIndex="7">
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
                <font>
                   <Font size="18.0" />
                </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
             </Label>
             <Label fx:id="labelCardTotal" GridPane.columnIndex="1" GridPane.rowIndex="8">
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
                <font>
                   <Font size="18.0" />
                </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
             </Label>
             <Label fx:id="labelPixTotal" GridPane.columnIndex="1" GridPane.rowIndex="9">
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
                <font>
                   <Font size="18.0" />
-               </font>
-            </Label>
-            <Label text="Ifood" GridPane.rowIndex="1">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
-            </Label>
-            <Label text="PV" GridPane.rowIndex="2">
-               <font>
-                  <Font name="System Bold" size="18.0" />
                </font>
                <GridPane.margin>
                   <Insets left="20.0" />
@@ -185,20 +262,12 @@
                </GridPane.margin>
             </Label>
             <Label fx:id="labelDirectOrderTotal" GridPane.columnIndex="1" GridPane.rowIndex="2">
-               <GridPane.margin>
-                  <Insets left="20.0" />
-               </GridPane.margin>
                <font>
                   <Font size="18.0" />
                </font>
-            </Label>
-            <Label text="Entregas" GridPane.rowIndex="10">
                <GridPane.margin>
-                  <Insets left="19.0" />
+                  <Insets left="20.0" />
                </GridPane.margin>
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
             </Label>
             <Label fx:id="labelDeliveryTotal" GridPane.columnIndex="1" GridPane.rowIndex="10">
                <font>
@@ -209,6 +278,9 @@
                </GridPane.margin>
             </Label>
          </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" top="10.0" />
+         </VBox.margin>
       </GridPane>
    </children>
-</AnchorPane>
+</VBox>
