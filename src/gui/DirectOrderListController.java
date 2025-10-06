@@ -10,6 +10,7 @@ import application.Main;
 import db.DbException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
+import gui.util.ImageManager;
 import gui.util.Utils;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -27,11 +28,12 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.entities.Order;
 import model.entities.DirectOrder;
+import model.entities.Order;
 import model.services.DirectOrderService;
 
 public class DirectOrderListController implements Initializable, DataChangeListener {
@@ -83,6 +85,11 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 		
 		Stage stage = (Stage)Main.getMainScene().getWindow();
 		tableViewDirectOrder.prefHeightProperty().bind(stage.heightProperty());
+		
+		ImageView plus_sign = new ImageView(ImageManager.getImage("add"));
+		plus_sign.setFitWidth(23);
+		plus_sign.setFitHeight(23);
+		btNew.setGraphic(plus_sign);
 	}
 	
 	public void updateTableView() {
@@ -109,6 +116,8 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Entre com os dados do pedido");
 			dialogStage.setScene(new Scene(pane));
+			dialogStage.getScene().getStylesheets().add(getClass().getResource("/application/application.css").toExternalForm());
+			dialogStage.getIcons().add(ImageManager.getImage("Order-history"));
 			dialogStage.setResizable(false);
 			dialogStage.initOwner(parentStage);
 			dialogStage.initModality(Modality.WINDOW_MODAL);
@@ -141,6 +150,7 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 			}
 			try {
 				service.delete(obj);
+				Alerts.showAlert("Sucesso", "Pedido removido com sucesso", null, AlertType.INFORMATION);
 				updateTableView();
 			}
 			catch (DbException e) {

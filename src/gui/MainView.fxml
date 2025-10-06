@@ -1,38 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainViewController">
-   <content>
-      <VBox prefHeight="287.0" prefWidth="424.0">
-         <children>
-            <MenuBar>
-              <menus>
-                <Menu mnemonicParsing="false" text="Registration">
-                  <items>
-                    <MenuItem fx:id="menuItemIfoodOrder" mnemonicParsing="false" onAction="#onMenuItemIfoodOrderAction" text="Ifood" />
-                        <MenuItem fx:id="menuItemDirectOrder" mnemonicParsing="false" onAction="#onMenuItemDirectOrderAction" text="PV" />
-                  </items>
-                </Menu>
-                  <Menu mnemonicParsing="false" text="Results">
-                    <items>
-                      <MenuItem fx:id="menuItemResult" mnemonicParsing="false" onAction="#onMenuItemResultAction" text="Totais" />
-                    </items>
-                  </Menu>
-              </menus>
-            </MenuBar>
-            <ToolBar>
-               <items>
-                  <Button fx:id="btReset" mnemonicParsing="false" onAction="#onBtResetAllAction" text="Reset" />
-               </items>
-            </ToolBar>
-         </children>
-      </VBox>
-   </content>
-</ScrollPane>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainViewController">
+	<left>
+		<VBox prefWidth="100.0" styleClass="side-bar" BorderPane.alignment="CENTER">
+			<children>
+				<Button fx:id="btIfoodOrder" mnemonicParsing="false" onAction="#onBtIfoodOrderAction">
+					<VBox.margin>
+						<Insets left="10.0" top="10.0" />
+					</VBox.margin>
+				</Button>
+				<Button fx:id="btDirectOrder" mnemonicParsing="false" onAction="#onBtDirectOrderAction">
+					<VBox.margin>
+						<Insets left="10.0" top="10.0" />
+					</VBox.margin>
+				</Button>
+				<Button fx:id="btResult" mnemonicParsing="false" onAction="#onBtResultAction">
+					<VBox.margin>
+						<Insets left="10.0" top="15.0" />
+					</VBox.margin>
+				</Button>
+			</children>
+		</VBox>
+	</left>
+	<center>
+		<VBox>
+			<children>
+				<Label id="screenIformation" fx:id="screenInformation">
+					<VBox.margin>
+						<Insets top="10.0" />
+					</VBox.margin>
+				</Label>
+				<Button fx:id="btReset" mnemonicParsing="false" onAction="#onBtResetAllAction" styleClass="reset-button" text="Resetar Dados">
+					<VBox.margin>
+						<Insets bottom="5.0" top="20.0" />
+					</VBox.margin>
+				</Button>
+				<VBox fx:id="contentHolder">
+					<VBox.margin>
+						<Insets left="-15.0" />
+					</VBox.margin>
+				</VBox>
+			</children>
+         <BorderPane.margin>
+            <Insets left="15.0" />
+         </BorderPane.margin>
+		</VBox>
+	</center>
+</BorderPane>

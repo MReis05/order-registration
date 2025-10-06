@@ -94,7 +94,7 @@ public class IfoodOrderFormController implements Initializable {
 			setErrorMessages(e.getErrors());
 		}
 		catch (DbException e) {
-			Alerts.showAlert("Error in saving IfoodOrder", null, e.getMessage(), AlertType.ERROR);
+			Alerts.showAlert("Error in saving Ifood Order", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 	
