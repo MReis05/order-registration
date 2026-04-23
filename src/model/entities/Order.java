@@ -1,21 +1,30 @@
 package model.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.Objects;
+
+import model.entities.enums.PaymentMethod;
 
 public class Order implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Integer id;
-	private Double orderValue;
-	private Double deliveryValue;
+	private BigDecimal orderValue;
+	private BigDecimal deliveryValue;
+	private PaymentMethod paymentMethod;
+	private LocalDate date;
 
 	public Order() {
 	}
 
-	public Order(Integer id, Double orderValue, Double deliveryValue) {
-		this.id = id;
+	public Order(BigDecimal orderValue, BigDecimal deliveryValue, PaymentMethod paymentMethod, LocalDate date) {
 		this.orderValue = orderValue;
 		this.deliveryValue = deliveryValue;
+		this.paymentMethod = paymentMethod;
+		this.date = date;
 	}
 
 	public Integer getId() {
@@ -26,20 +35,52 @@ public class Order implements Serializable {
 		this.id = id;
 	}
 
-	public Double getOrderValue() {
+	public BigDecimal getOrderValue() {
 		return orderValue;
 	}
 
-	public void setOrderValue(Double orderValue) {
-		this.orderValue = orderValue;
+	public void setOrderValue(BigDecimal orderValue) {
+		this.orderValue = orderValue.setScale(2, RoundingMode.HALF_EVEN);
 	}
 
-	public Double getDeliveryValue() {
+	public BigDecimal getDeliveryValue() {
 		return deliveryValue;
 	}
 
-	public void setDeliveryValue(Double deliveryValue) {
-		this.deliveryValue = deliveryValue;
+	public void setDeliveryValue(BigDecimal deliveryValue) {
+		this.deliveryValue = deliveryValue.setScale(2, RoundingMode.HALF_EVEN);
 	}
 
+	public PaymentMethod getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethods(PaymentMethod paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Order other = (Order) obj;
+		return Objects.equals(id, other.id);
+	}
 }

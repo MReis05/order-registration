@@ -9,90 +9,95 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-import application.Main;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
+import gui.util.ImageManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import model.services.IfoodService;
-import model.services.PVService;
+import model.services.DirectOrderService;
+import model.services.IfoodOrderService;
 
 public class MainViewController implements Initializable {
 	
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
-	private IfoodService ifoodService;
+	@FXML
+	private VBox contentHolder;
 	
-	private PVService pvService;
+	private IfoodOrderService ifoodOrderService;
+	
+	private DirectOrderService directOrderService;
 
 	@FXML
-	private MenuItem menuItemIfood;
+	private Button btIfoodOrder;
 	
 	@FXML
-	private MenuItem menuItemPV;
+	private Button btDirectOrder;
 	
 	@FXML
-	private MenuItem menuItemResult;
+	private Button btResult;
 	
 	@FXML
 	private Button btReset;
 	
 	@FXML
-	public void onMenuItemIfoodAction() {
-		loadView("/gui/IfoodListView.fxml", (IfoodListController controller) -> {
-			controller.setService(new IfoodService());
+	private Label screenInformation;
+	
+	@FXML
+	public void onBtIfoodOrderAction() {
+		loadView("/gui/IfoodOrderListView.fxml", (IfoodOrderListController controller) -> {
+			controller.setService(new IfoodOrderService());
 			controller.updateTableView();
-		});
+		}, "Ifood");
 	}
 	
 	@FXML
-	public void onMenuItemPVAction() {
-		loadView("/gui/PVListView.fxml", (PVListController controller) -> {
-			controller.setService(new PVService());
+	public void onBtDirectOrderAction() {
+		loadView("/gui/DirectOrderListView.fxml", (DirectOrderListController controller) -> {
+			controller.setService(new DirectOrderService());
 			controller.updateTableView();
-		});	}
+		}, "PV");	}
 	
 	@FXML
-	public void onMenuItemResultAction() {
-		totalScreen(result(), "/gui/ResultsView.fxml");
+	public void onBtResultAction() {
+		totalScreen("/gui/ResultsView.fxml");
 	}
 	
 	@FXML
 	public void onBtResetAllAction() {
-		 Optional<ButtonType> result = Alerts.showConfirmation("Redefinir Dados", "Tem certeza que deseja apagar todos os dados de iFood e PV?");
-		    if (result.isPresent() && result.get() == ButtonType.OK) {
-		        ifoodService.resetAll();
-		        pvService.resetAll();
+		 Optional<ButtonType> reset = Alerts.showConfirmation("Redefinir Dados", "Tem certeza que deseja apagar todos os dados de Ifood e PV?");
+		    if (reset.isPresent() && reset.get() == ButtonType.OK) {
+		        ifoodOrderService.resetAll();
+		        directOrderService.resetAll();
 		        Alerts.showAlert("Sucesso", null, "Todos os dados foram redefinidos.", AlertType.INFORMATION);
 		        notifyDataChangeListeners();
 		    }
 	}
 	
-	public synchronized <T> void loadView(String absoluteView, Consumer<T> consumer) {
+	public synchronized <T> void loadView(String absoluteView, Consumer<T> consumer, String channel) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteView));
-			VBox newVBox = loader.load();
+			VBox newVbox = loader.load();
 
-			Scene mainScene = Main.getMainScene();
-			VBox mainVbox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
-
-			Node mainMenu = mainVbox.getChildren().get(0);
-			Node mainToolBar = mainVbox.getChildren().get(1);
-			mainVbox.getChildren().clear();
-			dataChangeListeners.clear();
-			mainVbox.getChildren().add(mainMenu);
-			mainVbox.getChildren().add(mainToolBar);
-			mainVbox.getChildren().addAll(newVBox.getChildren());
+			contentHolder.getChildren().clear();
+			screenInformation.setText("");
+			
+			contentHolder.getChildren().addAll(newVbox.getChildren());
+			
+			if(channel.equals("Ifood")) {
+				screenInformation.setText("Pedidos Ifood");
+			}
+			else if (channel.equals("PV")) {
+				screenInformation.setText("Pedidos PV");
+			}
+			
 			T controller = loader.getController();
 			if(controller instanceof DataChangeListener) {
 				subscribeDataChangeListener((DataChangeListener) controller);
@@ -104,23 +109,16 @@ public class MainViewController implements Initializable {
 	}
 	
 
-	private void totalScreen(Map<String, Double> result, String absoluteView) {
+	private void totalScreen(String absoluteView) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteView));
-			Pane pane = loader.load();
+			VBox pane = loader.load();
 			
-			ResultsController controller = loader.getController();
-			controller.setResult(result);
+			contentHolder.getChildren().clear();
+			screenInformation.setText("");
 			
-			Scene mainScene = Main.getMainScene();
-			VBox mainVbox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
-			
-			Node mainMenu = mainVbox.getChildren().get(0);
-			Node mainToolBar = mainVbox.getChildren().get(1);
-			mainVbox.getChildren().clear();
-			mainVbox.getChildren().add(mainMenu);
-			mainVbox.getChildren().add(mainToolBar);
-			mainVbox.getChildren().addAll(pane.getChildren());
+			contentHolder.getChildren().addAll(pane.getChildren());
+			screenInformation.setText("Balanço do dia");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -128,31 +126,12 @@ public class MainViewController implements Initializable {
 		}
 	}
 	
-	public Map<String, Double> result(){
-		Map<String, Double> result = ifoodService.total();
-		Map<String, Double> pv = pvService.total();
-		
-		for (String key : pv.keySet()) {
-			double value = 0.00;
-			if (result.containsKey(key)) {
-				value += result.get(key);
-				value += pv.get(key);
-				result.put(key, value);
-			}
-			else {
-				result.put(key, pv.get(key));
-			}
-		}
-		
-		return result;
+	public void setIfoodOrderService(IfoodOrderService service) {
+		this.ifoodOrderService = service;
 	}
 	
-	public void setIfoodService(IfoodService service) {
-		this.ifoodService = service;
-	}
-	
-	public void setPVService(PVService service) {
-		this.pvService = service;
+	public void setDirectOrderService(DirectOrderService service) {
+		this.directOrderService = service;
 	}
 	
 	private void notifyDataChangeListeners() {
@@ -170,5 +149,26 @@ public class MainViewController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
+		ImageView delivery_bike = new ImageView(ImageManager.getImage("ifoodOrder"));
+		ImageView order_chart = new ImageView(ImageManager.getImage("orderChart"));
+		ImageView point_of_sale = new ImageView(ImageManager.getImage("directOrder"));
+		ImageView reset = new ImageView(ImageManager.getImage("reset"));
+		
+		delivery_bike.setFitHeight(32);
+		delivery_bike.setFitWidth(32);
+		
+		order_chart.setFitHeight(32);
+		order_chart.setFitWidth(32);
+		
+		point_of_sale.setFitHeight(32);
+		point_of_sale.setFitWidth(32);
+		
+		reset.setFitHeight(23);
+		reset.setFitWidth(23);
+		
+		btDirectOrder.setGraphic(point_of_sale);
+		btIfoodOrder.setGraphic(delivery_bike);
+		btReset.setGraphic(reset);
+		btResult.setGraphic(order_chart);
 	}
 }

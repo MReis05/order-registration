@@ -18,16 +18,16 @@ public class ResultsController implements Initializable {
 	private Label labelIfoodTotal;
 	
 	@FXML
-	private Label labelPVTotal;
+	private Label labelDirectOrderTotal;
 	
 	@FXML
 	private Label labelDeliveryTotal;
 	
 	@FXML
-	private Label labelForIfoodTotal;
+	private Label labelIfoodPaymentValueTotal;
 	
 	@FXML
-	private Label labelFeeTotal;
+	private Label labelIfoodComissionTotal;
 	
 	@FXML
 	private Label labelServiceFeePTotal;
@@ -48,10 +48,10 @@ public class ResultsController implements Initializable {
 		Set<String> fields = results.keySet();
 		labelTotal.setText((fields.contains("totalValue") ? String.format("%.2f", results.get("totalValue")) : ""));
 		labelIfoodTotal.setText((fields.contains("ifoodTotal") ? String.format("%.2f", results.get("ifoodTotal")) : ""));
-		labelPVTotal.setText((fields.contains("pvTotal") ? String.format("%.2f", results.get("pvTotal")) : ""));
+		labelDirectOrderTotal.setText((fields.contains("directOrderTotal") ? String.format("%.2f", results.get("directOrderTotal")) : ""));
 		labelDeliveryTotal.setText((fields.contains("deliveryTotal") ? String.format("%.2f", results.get("deliveryTotal")) : ""));
-		labelForIfoodTotal.setText((fields.contains("forIfoodTotal") ? String.format("%.2f", results.get("forIfoodTotal")) : ""));
-		labelFeeTotal.setText((fields.contains("feeTotal") ? String.format("%.2f", results.get("feeTotal")) : ""));
+		labelIfoodPaymentValueTotal.setText((fields.contains("ifoodPaymentValueTotal") ? String.format("%.2f", results.get("ifoodPaymentValueTotal")) : ""));
+		labelIfoodComissionTotal.setText((fields.contains("ifoodComissionTotal") ? String.format("%.2f", results.get("ifoodComissionTotal")) : ""));
 		labelServiceFeePTotal.setText((fields.contains("serviceFeePTotal") ? String.valueOf(((Double)results.get("serviceFeePTotal")).intValue()) : ""));
 		labelServiceFeeTTotal.setText((fields.contains("serviceFeePTotal") ? String.valueOf(((Double)results.get("serviceFeeTTotal")).intValue()) : ""));
 		labelCashTotal.setText((fields.contains("cashTotal") ? String.format("%.2f", results.get("cashTotal")) : ""));

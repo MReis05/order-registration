@@ -1,1 +1,178 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+/*Tela inicial */
+
+.side-bar{
+	-fx-background-color: #2B2B2B;
+}
+
+.side-bar .button{
+	-fx-background-insets: 0;
+    -fx-background-color: transparent; 
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px; 
+    -fx-border-color: #E0E0E0; 
+    -fx-text-fill: #FFFFFF; 
+    -fx-font-weight: bold;
+    -fx-pref-width: 100px; 
+    -fx-alignment: CENTER_LEFT; 
+    -fx-cursor: hand;
+}
+
+.side-bar .button:hover{
+    -fx-background-color: #4A4A4A; 
+    -fx-border-color: #E53935;
+}
+
+.side-bar .button:focused{
+	-fx-background-color: #E53935;
+}
+
+.reset-button {
+	-fx-text-fill: #FFFFFF;
+	-fx-background-color: #5A5A5A;
+	-fx-background-radius: 5px;
+	-fx-border-radius: 5px;
+	-fx-font-size: 14px;
+	-fx-padding: 8px 15px;
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.5, 0, 1);
+	-fx-alignment: CENTER_LEFT;
+    -fx-font-weight: bold;
+    -fx-cursor:hand;
+}
+
+.reset-button:hover {
+    -fx-background-color: #4A4A4A; 
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0.5, 0, 2); 
+}
+
+.reset-button:pressed {
+    -fx-background-color: #3A3A3A; 
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0.5, 0, 0);
+}
+
+ #screenIformation{
+ 	-fx-font-family: "Montserrat";
+	-fx-font-fill: black;
+	-fx-font-size: 24px;
+	-fx-font-weight: bold;
+}
+
+/*Telas de List */
+.new-button{
+	-fx-text-fill: #FFFFFF;
+	-fx-background-color: #E53935;
+	-fx-background-radius: 5px;
+	-fx-font-size: 14px;
+	-fx-border-radius: 5px;
+	-fx-padding: 8px 15px;
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.5, 0, 1);
+	-fx-alignment: CENTER_LEFT;
+    -fx-font-weight: bold;
+    -fx-cursor:hand;
+}
+
+.new-button:hover{
+	-fx-background-color: #C62828;
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0.5, 0, 2); 
+}
+
+.new-button:pressed{
+	-fx-background-color: #B71C1C;
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0.5, 0, 0);
+}
+
+.table .column-header{
+	-fx-background-color: #2B2B2B; 
+	-fx-border-color: transparent #FFFFFF30 transparent transparent;
+	-fx-border-width: 1px;
+}
+
+.table .filler{
+	-fx-background-color: #2B2B2B;
+}
+
+.table .column-header .label{
+	-fx-text-fill: white;          
+    -fx-font-weight: bold;         
+    -fx-font-size: 13px;
+    -fx-padding: 5px 10px;  
+}
+
+.table .table-row-cell {
+    -fx-background-color: #FDFDFD; 
+}
+
+
+.table .table-row-cell:odd {
+    -fx-background-color: #F0F0F0; 
+}
+
+.table .table-cell{
+	-fx-font-family: "Lato";
+	-fx-text-fill: black;                  
+    -fx-font-size: 14px; 
+    -fx-alignment: CENTER;
+    -fx-padding: 12px 8px;
+}
+
+#removeButton .button{
+	-fx-text-fill: #FFFFFF;
+	-fx-background-color: #5A5A5A;
+	-fx-background-radius: 5px;
+	-fx-border-radius: 5px;
+	-fx-font-size: 14px;
+	-fx-padding: 8px 15px;
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.5, 0, 1);
+	-fx-alignment: CENTER_LEFT;
+    -fx-font-weight: bold;
+    -fx-cursor:hand;
+}
+
+#removeButton .button:hover{
+	-fx-background-color: #4A4A4A; 
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0.5, 0, 2); 
+}
+
+#removeButton .button:pressed{
+	-fx-background-color: #3A3A3A; 
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0.5, 0, 0);
+}
+
+/*Telas de formulario */
+
+#form-grid{
+	-fx-font-family: 'Lato';
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+
+#cancel-Button{
+	-fx-text-fill: #FFFFFF;
+	-fx-background-color: #5A5A5A;
+	-fx-background-radius: 5px;
+	-fx-border-radius: 5px;
+	-fx-font-size: 14px;
+	-fx-padding: 6px 8px;
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.5, 0, 1);
+	-fx-alignment: CENTER_LEFT;
+    -fx-font-weight: bold;
+    -fx-cursor:hand;
+}
+
+/*Tela de Resultado */
+
+.label-header-left{
+	fx-font-family: "Lato";
+    -fx-font-size: 18px;       
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+}
+
+.table-odd {
+	-fx-background-color: #F0F0F0;
+}
+
+.table {
+	-fx-background-color: #FDFDFD;
+}
