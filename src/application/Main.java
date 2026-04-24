@@ -23,7 +23,7 @@ public class Main extends Application {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
 			BorderPane borderPane = loader.load();
 			MainViewController controller = loader.getController();
-			controller.setIfoodOrderService(new OrderService());
+			controller.setOrderService(new OrderService());
 			mainScene = new Scene(borderPane);
 			mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.getIcons().add(ImageManager.getImage("Order-history"));

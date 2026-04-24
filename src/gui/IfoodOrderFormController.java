@@ -27,7 +27,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.IfoodOrder;
-import model.entities.Order;
 import model.entities.enums.Category;
 import model.entities.enums.PaymentMethod;
 import model.exceptions.DbException;
@@ -73,6 +72,9 @@ public class IfoodOrderFormController implements Initializable {
 	private Label labelErrorPaymentValue;
 	
 	@FXML
+	private Label labelErrorPaymentMethod;
+	
+	@FXML
 	private Button btSave;
 	
 	@FXML
@@ -94,7 +96,7 @@ public class IfoodOrderFormController implements Initializable {
 		try {
 			entity = getFormData();
 			service.saveOrUpdate(entity);
-			notifyDataChangeListeners();
+			notifyDataChangeListeners(entity);
 			Utils.currentStage(event).close();
 		}
 		catch (ValidationExceptions e) {
@@ -106,9 +108,9 @@ public class IfoodOrderFormController implements Initializable {
 		}
 	}
 	
-	private void notifyDataChangeListeners() {
+	private void notifyDataChangeListeners(IfoodOrder obj) {
 		for (DataChangeListener listener : dataChangeListeners) {
-			listener.dataChangeListeners();
+			listener.dataChangeListeners(obj);
 		}
 	}
 	
@@ -143,6 +145,11 @@ public class IfoodOrderFormController implements Initializable {
 	}
 	
 	public IfoodOrder getFormData() {
+		labelErrorDeliveryValue.setText("");
+		labelErrorOrderValue.setText("");
+		labelErrorPaymentMethod.setText("");
+		labelErrorPaymentValue.setText("");
+		
 		IfoodOrder obj = new IfoodOrder();
 		
 		if(checkBoxServiceFee.isSelected()) {
@@ -166,6 +173,11 @@ public class IfoodOrderFormController implements Initializable {
 			exception.addError("deliveryValue", "Field can't be empty");
 		}
 		obj.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
+		
+		if(comboBoxPayment.getValue() == null) {
+			exception.addError("paymentMethod", "You must select one Payment method");
+		}
+		
 		obj.setPaymentMethods(comboBoxPayment.getValue());
 		if(comboBoxPayment.getValue() == PaymentMethod.IFOOD) {
 			obj.feeForIfood();
@@ -173,7 +185,7 @@ public class IfoodOrderFormController implements Initializable {
 		}
 		else {
 			obj.setCategory(Category.VIA_LOJA);
-			if (comboBoxCutQuestion.getValue() == "Sim") {
+			if ("Sim".equals(comboBoxCutQuestion.getValue())) {
 				if (txtPaymentValue.getText() == null || txtPaymentValue.getText().trim().equals("") || Utils.tryParseToDouble(txtPaymentValue.getText()) == 0.00) {
 					exception.addError("paymentValue", "Field can't be empty");
 				}
@@ -200,7 +212,6 @@ public class IfoodOrderFormController implements Initializable {
 			txtDeliveryValue.setText(entity.getDeliveryValue().toString());
 			txtPaymentValue.setText(entity.getIfoodPaymentValue().toString());
 		}
-		comboBoxCutQuestion.getSelectionModel().selectFirst();
 	}
 	
 	public void setErrorMessages(Map<String, String> errors) {
@@ -209,6 +220,7 @@ public class IfoodOrderFormController implements Initializable {
 		labelErrorOrderValue.setText((field.contains("orderValue") ? errors.get("orderValue") : ""));
 		labelErrorDeliveryValue.setText((field.contains("deliveryValue") ? errors.get("deliveryValue") : ""));
 		labelErrorPaymentValue.setText((field.contains("paymentValue") ? errors.get("paymentValue") : ""));
+		labelErrorPaymentMethod.setText((field.contains("paymentMethod") ? errors.get("paymentMethod") : ""));
 	}
 	
 	public void loadAssociatedObjects() {

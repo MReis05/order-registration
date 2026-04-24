@@ -2,5 +2,5 @@ package gui.listeners;
 
 public interface DataChangeListener {
 
-	void dataChangeListeners();
+	<T> void dataChangeListeners(T obj);
 }

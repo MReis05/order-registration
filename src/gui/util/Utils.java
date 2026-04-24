@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
@@ -109,6 +111,52 @@ public class Utils {
 	            }
 	        };
 	    });
+	}
+	
+	public static <T> void formatTableColumnStringCamelCase(TableColumn<T, String> tableColumn) {
+		tableColumn.setCellFactory(column ->{
+			return new TableCell<T, String>(){
+				@Override
+				protected void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+					
+					if(empty || item == null) {
+						setText(null);
+					}
+					else {
+						String[] words = item.toLowerCase().split("_");
+						StringBuilder result = new StringBuilder();
+						
+						for(String word : words) {
+							if(!word.isEmpty()) {
+							result.append(Character.toUpperCase(word.charAt(0)))
+		                     .append(word.substring(1))
+		                     .append(" ");
+							}
+						}
+						setText(result.toString().trim());
+					}
+				}
+			};
+		});
+	}
+	
+	public static <T> void formatTableColumnRowAsIndex(TableColumn<T, Integer> tableColumn) {
+		tableColumn.setCellFactory(column ->{
+			return new TableCell<T, Integer>(){
+				@Override
+				protected void updateItem(Integer item, boolean empty) {
+					super.updateItem(item, empty);
+					
+					if(empty) {
+						setText(null);
+					}
+					else {
+						setText(String.valueOf(getIndex() + 1));
+					}
+				}
+			};
+		});
 	}
 
 	public static void formatDatePicker(DatePicker datePicker, String format) {

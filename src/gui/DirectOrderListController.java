@@ -3,6 +3,8 @@ package gui;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -25,6 +27,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -43,10 +46,19 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	private OrderService service;
 	
 	@FXML
+	private DatePicker dpDate;
+	
+	@FXML
+	private Button btsearch;
+	
+	@FXML
+	private Button btclear;
+	
+	@FXML
 	private TableView<DirectOrder> tableViewDirectOrder;
 	
 	@FXML
-	private TableColumn<DirectOrder, Long> tableColumnId;
+	private TableColumn<DirectOrder, Integer> tableColumnIndex;
 	
 	@FXML
 	private TableColumn<DirectOrder, BigDecimal> tableColumnOrderValue;
@@ -62,6 +74,8 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	
 	private ObservableList<DirectOrder> obsList;
 	
+	private List<DirectOrder> list = new ArrayList<>();
+	
 	@FXML
 	private Button btNew;
 	
@@ -72,38 +86,62 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 		dialogForm(obj, "/gui/DirectOrderDialogForm.fxml", parentStage);
 	}
 
-	@Override
-	public void initialize(URL url, ResourceBundle rb) {
-		initializaNodes();
+	@FXML
+	public void onBtSearchAction() {
+		LocalDate date;
+		if(dpDate.getValue() != null) {
+			date = dpDate.getValue();
+		}
+		else {
+			date = LocalDate.now();
+		}
+		List<Order> orders = service.findByTypeAndDate("DIRECT", date);
+
+		list = orders.stream().map(order -> (DirectOrder) order).collect(Collectors.toList());
+		
+		updateTableView();
 	}
 	
-	public void initializaNodes() {
-		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
+	@FXML
+	public void onBtClearAction() {
+		obsList.clear();
+		updateTableView();
+	}
+	
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
+		initializeNodes();
+	}
+	
+	private void initializeNodes() {
+		Utils.formatDatePicker(dpDate, "dd/MM/yyyy");
+		initializeTable();
+		initializeResources();
+	}
+	
+	private void initializeTable() {
+		Utils.formatTableColumnRowAsIndex(tableColumnIndex);
 		tableColumnOrderValue.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getOrderValue()));
 		Utils.formatTableColumnBigDecimal(tableColumnOrderValue, 2);
 		tableColumnDeliveryValue.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDeliveryValue()));
 		Utils.formatTableColumnBigDecimal(tableColumnDeliveryValue, 2);
 		tableColumnPaymentMethod.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPaymentMethod().name()));
+		Utils.formatTableColumnStringCamelCase(tableColumnPaymentMethod);
 		
 		Stage stage = (Stage)Main.getMainScene().getWindow();
 		tableViewDirectOrder.prefHeightProperty().bind(stage.heightProperty());
-		
+	}
+	
+	private void initializeResources() {
 		ImageView plus_sign = new ImageView(ImageManager.getImage("add"));
+		
 		plus_sign.setFitWidth(23);
 		plus_sign.setFitHeight(23);
+		
 		btNew.setGraphic(plus_sign);
 	}
 	
 	public void updateTableView() {
-		if(service == null) {
-			throw new IllegalStateException();
-		}
-		List<Order> orders = service.findByType("DIRECT");
-
-		List<DirectOrder> list = orders.stream()
-		                                   .map(order -> (DirectOrder) order)
-		                                   .collect(Collectors.toList());
-		
 		obsList = FXCollections.observableArrayList(list);
 		tableViewDirectOrder.setItems(obsList);
 		initRemoveButtons();
@@ -145,7 +183,8 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	}
 
 	@Override
-	public void dataChangeListeners() {
+	public <T> void dataChangeListeners(T obj) {
+		list.add((DirectOrder)obj);
 		updateTableView();
 	}
 
@@ -169,7 +208,7 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	private void initRemoveButtons() {
 		tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		tableColumnRemove.setCellFactory(param -> new TableCell<DirectOrder, DirectOrder>() {
-			private final Button button = new Button("remove");
+			private final Button button = new Button("remover");
 
 			@Override
 			protected void updateItem(DirectOrder obj, boolean empty) {
@@ -183,5 +222,4 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 			}
 		});
 	}
-
 }

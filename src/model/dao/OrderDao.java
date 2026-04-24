@@ -1,5 +1,6 @@
 package model.dao;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import model.entities.Order;
@@ -10,5 +11,5 @@ public interface OrderDao {
 	void update (Order obj);
 	void deleteById (Long id);
 	List<Order> findAll();
-	List<Order> findByType(String type);
+	List<Order> findByTypeAndDate(String type, LocalDate date);
 }

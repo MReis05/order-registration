@@ -3,6 +3,8 @@ package gui;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -25,10 +27,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -43,10 +45,19 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	private OrderService service;
 
 	@FXML
+	private DatePicker dpDate;
+	
+	@FXML
+	private Button btSearch;
+	
+	@FXML
+	private Button btClear;
+	
+	@FXML
 	private TableView<IfoodOrder> tableViewIfoodOrder;
 
 	@FXML
-	private TableColumn<IfoodOrder, Long> tableColumnId;
+	private TableColumn<IfoodOrder, Integer> tableColumnIndex;
 
 	@FXML
 	private TableColumn<IfoodOrder, BigDecimal> tableColumnOrderValue;
@@ -64,7 +75,9 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	private TableColumn<IfoodOrder, IfoodOrder> tableColumnRemove;
 
 	private ObservableList<IfoodOrder> obsList;
-
+	
+	private List<IfoodOrder> list = new ArrayList<>();
+	
 	@FXML
 	private Button btNew;
 
@@ -75,39 +88,64 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 		dialogForm(obj, "/gui/IfoodOrderDialogForm.fxml", parentStage);
 	}
 	
+	@FXML
+	public void onBtSearchAction() {
+		LocalDate date;
+		if(dpDate.getValue() != null) {
+			date = dpDate.getValue();
+		}
+		else {
+			date = LocalDate.now();
+		}
+		List<Order> orders = service.findByTypeAndDate("IFOOD", date);
+
+		list = orders.stream().map(order -> (IfoodOrder) order).collect(Collectors.toList());
+		                                  
+		updateTableView();
+	}
+	
+	@FXML
+	public void onBtClearAction() {
+		obsList.clear();
+		updateTableView();
+	}
+	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		initializaNodes();
+		initializeNodes();
 	}
 
-	public void initializaNodes() {
-		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
+	public void initializeNodes() {
+		initializeTable();
+		initializeResources();
+		Utils.formatDatePicker(dpDate, "dd/MM/yyyy");
+	}
+	
+	private void initializeTable() {
+		Utils.formatTableColumnRowAsIndex(tableColumnIndex);
 		tableColumnOrderValue.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getOrderValue()));
 		Utils.formatTableColumnBigDecimal(tableColumnOrderValue, 2);
 		tableColumnDeliveryValue.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDeliveryValue()));
 		Utils.formatTableColumnBigDecimal(tableColumnDeliveryValue, 2);
 		tableColumnPaymentMethod.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPaymentMethod().name()));
+		Utils.formatTableColumnStringCamelCase(tableColumnPaymentMethod);
 		tableColumnCategory.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCategory().name()));
-
+		Utils.formatTableColumnStringCamelCase(tableColumnCategory);
+		
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewIfoodOrder.prefHeightProperty().bind(stage.heightProperty());
-		
+	}
+	
+	private void initializeResources() {
 		ImageView plus_sign = new ImageView(ImageManager.getImage("add"));
+		
 		plus_sign.setFitHeight(23);
 		plus_sign.setFitWidth(23);
+		
 		btNew.setGraphic(plus_sign);
 	}
 
 	public void updateTableView() {
-		if (service == null) {
-			throw new IllegalStateException();
-		}
-		List<Order> orders = service.findByType("IFOOD");
-
-		List<IfoodOrder> list = orders.stream()
-		                                   .map(order -> (IfoodOrder) order)
-		                                   .collect(Collectors.toList());
-		
 		obsList = FXCollections.observableArrayList(list);
 		tableViewIfoodOrder.setItems(obsList);
 		initRemoveButtons();
@@ -149,7 +187,8 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	}
 
 	@Override
-	public void dataChangeListeners() {
+	public <T> void dataChangeListeners(T obj) {
+		list.add((IfoodOrder) obj);
 		updateTableView();
 
 	}
@@ -162,6 +201,7 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 				throw new IllegalStateException("Serivce was null");
 			}
 			try {
+				list.remove(obj);
 				service.delete(obj);
 				Alerts.showAlert("Sucesso", "Pedido removido com sucesso", null, AlertType.INFORMATION);
 				updateTableView();
@@ -174,7 +214,7 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	private void initRemoveButtons() {
 		tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		tableColumnRemove.setCellFactory(param -> new TableCell<IfoodOrder, IfoodOrder>() {
-			private final Button button = new Button("remove");
+			private final Button button = new Button("remover");
 			
 
 			@Override

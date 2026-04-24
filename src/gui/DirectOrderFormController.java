@@ -2,6 +2,7 @@ package gui;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +21,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.util.Callback;
 import model.entities.DirectOrder;
-import model.entities.Order;
+import model.entities.enums.PaymentMethod;
 import model.exceptions.DbException;
 import model.exceptions.ValidationExceptions;
 import model.services.OrderService;
@@ -40,7 +39,7 @@ public class DirectOrderFormController implements Initializable {
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
 	@FXML
-	private TextField txtId;
+	private DatePicker dpPurchaseDate;
 	
 	@FXML
 	private TextField txtOrderValue;
@@ -49,7 +48,7 @@ public class DirectOrderFormController implements Initializable {
 	private TextField txtDeliveryValue;
 	
 	@FXML
-	private ComboBox<String> comboBoxPayment;
+	private ComboBox<PaymentMethod> comboBoxPayment;
 	
 	@FXML
 	private Label labelErrorOrderValue;
@@ -58,12 +57,15 @@ public class DirectOrderFormController implements Initializable {
 	private Label labelErrorDeliveryValue;
 	
 	@FXML
+	private Label labelErrorPaymentMethod;
+	
+	@FXML
 	private Button btSave;
 	
 	@FXML
 	private Button btCancel;
 	
-	private ObservableList<String> obsPayemnt;
+	private ObservableList<PaymentMethod> obsPayemnt;
 	
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
@@ -77,7 +79,7 @@ public class DirectOrderFormController implements Initializable {
 		try {
 			entity = getFormData();
 			service.saveOrUpdate(entity);
-			notifyDataChangeListeners();
+			notifyDataChangeListeners(entity);
 			Utils.currentStage(event).close();
 		}
 		catch (ValidationExceptions e) {
@@ -88,9 +90,9 @@ public class DirectOrderFormController implements Initializable {
 		}
 	}
 	
-	private void notifyDataChangeListeners() {
+	private void notifyDataChangeListeners(DirectOrder entity) {
 		for (DataChangeListener listener : dataChangeListeners) {
-			listener.dataChangeListeners();
+			listener.dataChangeListeners(entity);
 		}
 	}
 	
@@ -117,17 +119,26 @@ public class DirectOrderFormController implements Initializable {
 	}
 	
 	public void initializeNodes() {
-		Constraints.setTextFieldInteger(txtId);
+		Utils.formatDatePicker(dpPurchaseDate, "dd/MM/yyyy");
 		Constraints.setTextFieldDouble(txtOrderValue);
 		Constraints.setTextFieldDouble(txtDeliveryValue);
 		loadAssociatedObjects();
-		initializeComboBoxPayment();
 	}
 	
 	public DirectOrder getFormData() {
-		DirectOrder obj = new DirectOrder(new Order());
+		labelErrorDeliveryValue.setText("");
+		labelErrorOrderValue.setText("");
+		labelErrorPaymentMethod.setText("");
+		DirectOrder obj = new DirectOrder();
 		
 		ValidationExceptions exception = new ValidationExceptions("Validation error");
+		
+		if(dpPurchaseDate != null && dpPurchaseDate.getValue() != null) {
+			obj.setDate(dpPurchaseDate.getValue());
+		}
+		else {
+			obj.setDate(LocalDate.now());
+		}
 		
 		if(txtOrderValue.getText() == null || txtOrderValue.getText().trim().equals("")) {
 			exception.addError("orderValue", "Field can't be empty");
@@ -137,6 +148,11 @@ public class DirectOrderFormController implements Initializable {
 			exception.addError("deliveryValue", "Field can't be empty");
 		}
 		obj.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
+		
+		if(comboBoxPayment.getValue() == PaymentMethod.IFOOD || comboBoxPayment.getValue() == null) {
+			exception.addError("paymentMethod", "You must select a payment method other than Ifood");
+		}
+		obj.setPaymentMethods(comboBoxPayment.getValue());
 		
 		if(!exception.getErrors().isEmpty()) {
 			throw exception;
@@ -149,16 +165,13 @@ public class DirectOrderFormController implements Initializable {
 		if(entity == null) {
 			throw new IllegalStateException("Entity was null");
 		}
-		txtId.setText(String.valueOf(entity.getId()));
-		txtOrderValue.setText(String.format("%.2f", entity.getOrderValue()));
-		txtDeliveryValue.setText(String.format("%.2f", entity.getDeliveryValue()));
-		if(entity.getPaymentMethod() == null) {
-			comboBoxPayment.getSelectionModel().selectFirst();
+		if(entity.getId() != null) {
+			txtOrderValue.setText(entity.getOrderValue().toString());
+			txtDeliveryValue.setText(entity.getDeliveryValue().toString());
+			if(entity.getPaymentMethod() != null) {
+				comboBoxPayment.setValue(entity.getPaymentMethod());
+			}
 		}
-		else {
-			comboBoxPayment.setValue(entity.getPaymentMethod().name());
-		}
-		
 	}
 	
 	public void setErrorMessages(Map<String, String> errors) {
@@ -166,30 +179,12 @@ public class DirectOrderFormController implements Initializable {
 		
 		labelErrorOrderValue.setText((field.contains("orderValue") ? errors.get("orderValue") : ""));
 		labelErrorDeliveryValue.setText((field.contains("deliveryValue") ? errors.get("deliveryValue") : ""));
+		labelErrorPaymentMethod.setText((field.contains("paymentMethod") ? errors.get("paymentMethod") : ""));
 	}
 	
 	public void loadAssociatedObjects() {
-		List<String> payment = new ArrayList<>();
-		
-		payment.add("Dinheiro");
-		payment.add("Cartão");
-		payment.add("Pix");
-		
-		obsPayemnt = FXCollections.observableArrayList(payment);
+		obsPayemnt = FXCollections.observableArrayList(PaymentMethod.values());
 		
 		comboBoxPayment.setItems(obsPayemnt);
 	}
-	
-	private void initializeComboBoxPayment() {
-		Callback<ListView<String>, ListCell<String>> factory = lv -> new ListCell<String>() {
-			@Override
-			protected void updateItem(String item, boolean empty) {
-				super.updateItem(item, empty);
-				setText(empty ? "" : item);
-			}
-		};
-		comboBoxPayment.setCellFactory(factory);
-		comboBoxPayment.setButtonCell(factory.call(null));
-	}
-
 }

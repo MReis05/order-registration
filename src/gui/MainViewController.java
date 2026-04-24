@@ -24,12 +24,10 @@ import model.services.OrderService;
 
 public class MainViewController implements Initializable {
 	
-	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
-	
 	@FXML
 	private VBox contentHolder;
 	
-	private OrderService ifoodOrderService;
+	private OrderService orderService;
 
 	@FXML
 	private Button btIfoodOrder;
@@ -50,7 +48,7 @@ public class MainViewController implements Initializable {
 	public void onBtIfoodOrderAction() {
 		loadView("/gui/IfoodOrderListView.fxml", (IfoodOrderListController controller) -> {
 			controller.setService(new OrderService());
-			controller.updateTableView();
+			controller.onBtSearchAction();
 		}, "Ifood");
 	}
 	
@@ -58,7 +56,7 @@ public class MainViewController implements Initializable {
 	public void onBtDirectOrderAction() {
 		loadView("/gui/DirectOrderListView.fxml", (DirectOrderListController controller) -> {
 			controller.setService(new OrderService());
-			controller.updateTableView();
+			controller.onBtSearchAction();
 		}, "PV");	}
 	
 	@FXML
@@ -73,7 +71,6 @@ public class MainViewController implements Initializable {
 		        //ifoodOrderService.resetAll();
 		        //directOrderService.resetAll();
 		        Alerts.showAlert("Sucesso", null, "Todos os dados foram redefinidos.", AlertType.INFORMATION);
-		        notifyDataChangeListeners();
 		    }
 	}
 	
@@ -95,11 +92,9 @@ public class MainViewController implements Initializable {
 			}
 			
 			T controller = loader.getController();
-			if(controller instanceof DataChangeListener) {
-				subscribeDataChangeListener((DataChangeListener) controller);
-			}
 			consumer.accept(controller);
 		} catch (IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IO Exception", "Error in Loading view", e.getMessage(), AlertType.ERROR);
 		}
 	}
@@ -122,22 +117,9 @@ public class MainViewController implements Initializable {
 		}
 	}
 	
-	public void setIfoodOrderService(OrderService service) {
-		this.ifoodOrderService = service;
+	public void setOrderService(OrderService service) {
+		this.orderService = service;
 	}
-	
-	private void notifyDataChangeListeners() {
-		for (DataChangeListener listener : dataChangeListeners) {
-			listener.dataChangeListeners();
-		}
-	}
-	
-	public void subscribeDataChangeListener(DataChangeListener listener) {
-		if(!dataChangeListeners.contains(listener)) {
-			dataChangeListeners.add(listener);
-		}
-	}
-	
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {

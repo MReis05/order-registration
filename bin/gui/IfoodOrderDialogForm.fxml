@@ -57,9 +57,10 @@
                </GridPane.margin></ComboBox>
             <ComboBox fx:id="comboBoxCutQuestion" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <TextField fx:id="txtPaymentValue" promptText="Digite o valor do pagamento" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Label fx:id="labelErrorOrderValue" textFill="#f20808" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Label fx:id="labelErrorDeliveryValue" textFill="#fc0303" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <Label fx:id="labelErrorPaymentValue" textFill="#eb0707" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <Label fx:id="labelErrorOrderValue" textFill="#f20000" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label fx:id="labelErrorDeliveryValue" textFill="#f20000" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <Label fx:id="labelErrorPaymentMethod" textFill="#f20000" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <Label fx:id="labelErrorPaymentValue" textFill="#f20000" GridPane.columnIndex="2" GridPane.rowIndex="5" />
             <HBox alignment="BOTTOM_RIGHT" prefHeight="36.0" prefWidth="140.0" spacing="5.0" styleClass="dialog-Buttons" GridPane.columnIndex="2" GridPane.rowIndex="6">
                <children>
                   <Button fx:id="btSave" mnemonicParsing="false" onAction="#onBtSaveAction" styleClass="new-button" text="Salvar">

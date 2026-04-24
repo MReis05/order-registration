@@ -171,13 +171,14 @@ public class OrderDaoJDBC implements OrderDao {
 	}
 
 	@Override
-	public List<Order> findByType(String type) {
+	public List<Order> findByTypeAndDate(String type, LocalDate date) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
-			st = conn.prepareStatement("SELECT * FROM orders WHERE order_type = ? ORDER BY Id");
+			st = conn.prepareStatement("SELECT * FROM orders WHERE order_type = ? AND order_date = ? ORDER BY Id");
 			
 			st.setString(1, type);
+			st.setObject(2, date);
 			
 	        rs = st.executeQuery();
 

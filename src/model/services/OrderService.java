@@ -1,5 +1,6 @@
 package model.services;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import model.dao.DaoFactory;
@@ -14,8 +15,8 @@ public class OrderService {
 		return dao.findAll();
 	}
 	
-	public List<Order> findByType(String type){
-		return dao.findByType(type);
+	public List<Order> findByTypeAndDate(String type, LocalDate date){
+		return dao.findByTypeAndDate(type, date);
 	}
 	
 	public void saveOrUpdate (Order obj) {
