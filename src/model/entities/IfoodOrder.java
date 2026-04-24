@@ -52,20 +52,18 @@ public class IfoodOrder  extends Order implements Serializable {
 		this.category = category;
 	}
 
-	public void feeForIfood(BigDecimal value) {
-		serviceFee = 1;
-		ifoodComission = value.multiply(new BigDecimal("0.1720"));
+	public void feeForIfood() {
+		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.1720"));
 	}
 
-	public void feeForStore(BigDecimal value) {
-		serviceFee = 1;
-		ifoodComission = value.multiply(new BigDecimal("0.12"));
+	public void feeForStore() {
+		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.12"));
 	}
 
 
-	public void cutPayments(BigDecimal order, BigDecimal cutValue) {
-		this.setOrderValue(order.add(cutValue));
-		ifoodPaymentValue = cutValue;
-		ifoodComission = order.add(cutValue).multiply(new BigDecimal("0.12"));
+	public void cutPayments() {
+		BigDecimal orderValue = this.getOrderValue().add(ifoodPaymentValue);
+		this.setOrderValue(orderValue);
+		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.12"));
 	}
 }

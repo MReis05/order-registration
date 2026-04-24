@@ -1,10 +1,12 @@
 package gui;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import application.Main;
 import gui.listeners.DataChangeListener;
@@ -34,23 +36,23 @@ import javafx.stage.Stage;
 import model.entities.DirectOrder;
 import model.entities.Order;
 import model.exceptions.DbException;
-import model.services.DirectOrderService;
+import model.services.OrderService;
 
 public class DirectOrderListController implements Initializable, DataChangeListener {
 	
-	private DirectOrderService service;
+	private OrderService service;
 	
 	@FXML
 	private TableView<DirectOrder> tableViewDirectOrder;
 	
 	@FXML
-	private TableColumn<DirectOrder, Integer> tableColumnId;
+	private TableColumn<DirectOrder, Long> tableColumnId;
 	
 	@FXML
-	private TableColumn<DirectOrder, Double> tableColumnOrderValue;
+	private TableColumn<DirectOrder, BigDecimal> tableColumnOrderValue;
 	
 	@FXML
-	private TableColumn<DirectOrder, Double> tableColumnDeliveryValue;
+	private TableColumn<DirectOrder, BigDecimal> tableColumnDeliveryValue;
 	
 	@FXML
 	private TableColumn<DirectOrder, String> tableColumnPaymentMethod;
@@ -77,10 +79,10 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	
 	public void initializaNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
-		tableColumnOrderValue.setCellValueFactory(new PropertyValueFactory<>("OrderValue"));
-		Utils.formatTableColumnDouble(tableColumnOrderValue, 2);
-		tableColumnDeliveryValue.setCellValueFactory(new PropertyValueFactory<>("DeliveryValue"));
-		Utils.formatTableColumnDouble(tableColumnDeliveryValue, 2);
+		tableColumnOrderValue.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getOrderValue()));
+		Utils.formatTableColumnBigDecimal(tableColumnOrderValue, 2);
+		tableColumnDeliveryValue.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDeliveryValue()));
+		Utils.formatTableColumnBigDecimal(tableColumnDeliveryValue, 2);
 		tableColumnPaymentMethod.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPaymentMethod().name()));
 		
 		Stage stage = (Stage)Main.getMainScene().getWindow();
@@ -96,7 +98,12 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 		if(service == null) {
 			throw new IllegalStateException();
 		}
-		List<DirectOrder> list = service.findAll();
+		List<Order> orders = service.findByType("DIRECT");
+
+		List<DirectOrder> list = orders.stream()
+		                                   .map(order -> (DirectOrder) order)
+		                                   .collect(Collectors.toList());
+		
 		obsList = FXCollections.observableArrayList(list);
 		tableViewDirectOrder.setItems(obsList);
 		initRemoveButtons();
@@ -108,7 +115,7 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 			Pane pane = loader.load();
 			
 			DirectOrderFormController controller = loader.getController();
-			controller.setDirectOrderService(new DirectOrderService());
+			controller.setDirectOrderService(new OrderService());
 			controller.subscribeDataChangeListener(this);
 			controller.setDirectOrder(obj);
 			controller.updateFormData();
@@ -129,11 +136,11 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 		}
 	}
 
-	public DirectOrderService getService() {
+	public OrderService getService() {
 		return service;
 	}
 
-	public void setService(DirectOrderService service) {
+	public void setService(OrderService service) {
 		this.service = service;
 	}
 

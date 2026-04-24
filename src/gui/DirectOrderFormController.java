@@ -29,13 +29,13 @@ import model.entities.DirectOrder;
 import model.entities.Order;
 import model.exceptions.DbException;
 import model.exceptions.ValidationExceptions;
-import model.services.DirectOrderService;
+import model.services.OrderService;
 
 public class DirectOrderFormController implements Initializable {
 	
 	private DirectOrder entity;
 	
-	private DirectOrderService service;
+	private OrderService service;
 	
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
@@ -107,7 +107,7 @@ public class DirectOrderFormController implements Initializable {
 		this.entity = entity;
 	}
 	
-	public void setDirectOrderService(DirectOrderService service) {
+	public void setDirectOrderService(OrderService service) {
 		this.service = service;
 	}
 	

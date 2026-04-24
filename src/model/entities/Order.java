@@ -11,7 +11,7 @@ import model.entities.enums.PaymentMethod;
 public class Order implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private Integer id;
+	private Long id;
 	private BigDecimal orderValue;
 	private BigDecimal deliveryValue;
 	private PaymentMethod paymentMethod;
@@ -27,11 +27,11 @@ public class Order implements Serializable {
 		this.date = date;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

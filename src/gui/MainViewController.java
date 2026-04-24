@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -21,8 +20,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import model.services.DirectOrderService;
-import model.services.IfoodOrderService;
+import model.services.OrderService;
 
 public class MainViewController implements Initializable {
 	
@@ -31,9 +29,7 @@ public class MainViewController implements Initializable {
 	@FXML
 	private VBox contentHolder;
 	
-	private IfoodOrderService ifoodOrderService;
-	
-	private DirectOrderService directOrderService;
+	private OrderService ifoodOrderService;
 
 	@FXML
 	private Button btIfoodOrder;
@@ -53,7 +49,7 @@ public class MainViewController implements Initializable {
 	@FXML
 	public void onBtIfoodOrderAction() {
 		loadView("/gui/IfoodOrderListView.fxml", (IfoodOrderListController controller) -> {
-			controller.setService(new IfoodOrderService());
+			controller.setService(new OrderService());
 			controller.updateTableView();
 		}, "Ifood");
 	}
@@ -61,7 +57,7 @@ public class MainViewController implements Initializable {
 	@FXML
 	public void onBtDirectOrderAction() {
 		loadView("/gui/DirectOrderListView.fxml", (DirectOrderListController controller) -> {
-			controller.setService(new DirectOrderService());
+			controller.setService(new OrderService());
 			controller.updateTableView();
 		}, "PV");	}
 	
@@ -74,8 +70,8 @@ public class MainViewController implements Initializable {
 	public void onBtResetAllAction() {
 		 Optional<ButtonType> reset = Alerts.showConfirmation("Redefinir Dados", "Tem certeza que deseja apagar todos os dados de Ifood e PV?");
 		    if (reset.isPresent() && reset.get() == ButtonType.OK) {
-		        ifoodOrderService.resetAll();
-		        directOrderService.resetAll();
+		        //ifoodOrderService.resetAll();
+		        //directOrderService.resetAll();
 		        Alerts.showAlert("Sucesso", null, "Todos os dados foram redefinidos.", AlertType.INFORMATION);
 		        notifyDataChangeListeners();
 		    }
@@ -126,12 +122,8 @@ public class MainViewController implements Initializable {
 		}
 	}
 	
-	public void setIfoodOrderService(IfoodOrderService service) {
+	public void setIfoodOrderService(OrderService service) {
 		this.ifoodOrderService = service;
-	}
-	
-	public void setDirectOrderService(DirectOrderService service) {
-		this.directOrderService = service;
 	}
 	
 	private void notifyDataChangeListeners() {

@@ -1,9 +1,9 @@
 package gui.util;
 
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 
 import javafx.event.ActionEvent;
@@ -36,24 +36,44 @@ public class Utils {
 		}
 	}
 
-	public static <T> void formatTableColumnDate(TableColumn<T, Date> tableColumn, String format) {
-		tableColumn.setCellFactory(column -> {
-			TableCell<T, Date> cell = new TableCell<T, Date>() {
-				private SimpleDateFormat sdf = new SimpleDateFormat(format);
+	public static <T> void formatTableColumnDate(TableColumn<T, LocalDate> tableColumn, String format) {
+	    tableColumn.setCellFactory(column -> {
+	        TableCell<T, LocalDate> cell = new TableCell<T, LocalDate>() {
+	            private DateTimeFormatter dtf = DateTimeFormatter.ofPattern(format);
 
-				@Override
-				protected void updateItem(Date item, boolean empty) {
-					super.updateItem(item, empty);
-					if (empty) {
-						setText(null);
-					} else {
-						setText(sdf.format(item));
-					}
-				}
-			};
-			return cell;
-		});
+	            @Override
+	            protected void updateItem(LocalDate item, boolean empty) {
+	                super.updateItem(item, empty);
+	                if (empty || item == null) {
+	                    setText(null);
+	                } else {
+	                    setText(dtf.format(item));
+	                }
+	            }
+	        };
+	        return cell;
+	    });
 	}
+	
+	public static <T> void formatTableColumnDateTime(TableColumn<T, LocalDateTime> tableColumn, String format) {
+	    tableColumn.setCellFactory(column -> {
+	        TableCell<T, LocalDateTime> cell = new TableCell<T, LocalDateTime>() {
+	            private DateTimeFormatter dtf = DateTimeFormatter.ofPattern(format);
+
+	            @Override
+	            protected void updateItem(LocalDateTime item, boolean empty) {
+	                super.updateItem(item, empty);
+	                if (empty || item == null) {
+	                    setText(null);
+	                } else {
+	                    setText(dtf.format(item));
+	                }
+	            }
+	        };
+	        return cell;
+	    });
+	}
+
 
 	public static <T> void formatTableColumnDouble(TableColumn<T, Double> tableColumn, int decimalPlaces) {
 		tableColumn.setCellFactory(column -> {
@@ -71,6 +91,24 @@ public class Utils {
 			};
 			return cell;
 		});
+	}
+	
+
+	public static <T> void formatTableColumnBigDecimal(TableColumn<T, BigDecimal> tableColumn, int decimalPlaces) {
+	    tableColumn.setCellFactory(column -> {
+	        return new TableCell<T, BigDecimal>() {
+	            @Override
+	            protected void updateItem(BigDecimal item, boolean empty) {
+	                super.updateItem(item, empty);
+	 
+	                if (empty || item == null) {
+	                    setText(null);
+	                } else {
+	                    setText(String.format(Locale.US, "%." + decimalPlaces + "f", item));
+	                }
+	            }
+	        };
+	    });
 	}
 
 	public static void formatDatePicker(DatePicker datePicker, String format) {

@@ -10,8 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import model.services.DirectOrderService;
-import model.services.IfoodOrderService;
+import model.services.OrderService;
 
 public class Main extends Application {
 
@@ -24,8 +23,7 @@ public class Main extends Application {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
 			BorderPane borderPane = loader.load();
 			MainViewController controller = loader.getController();
-			controller.setIfoodOrderService(new IfoodOrderService());
-			controller.setDirectOrderService(new DirectOrderService());
+			controller.setIfoodOrderService(new OrderService());
 			mainScene = new Scene(borderPane);
 			mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.getIcons().add(ImageManager.getImage("Order-history"));

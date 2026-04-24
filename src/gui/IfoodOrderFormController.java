@@ -2,7 +2,9 @@ package gui;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -19,29 +21,32 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.util.Callback;
 import model.entities.IfoodOrder;
 import model.entities.Order;
+import model.entities.enums.Category;
 import model.entities.enums.PaymentMethod;
 import model.exceptions.DbException;
 import model.exceptions.ValidationExceptions;
-import model.services.IfoodOrderService;
+import model.services.OrderService;
 
 public class IfoodOrderFormController implements Initializable {
 	
 	private IfoodOrder entity;
 	
-	private IfoodOrderService service;
+	private OrderService service;
 	
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
 	@FXML
-	private TextField txtId;
+	private DatePicker dpPurchaseDate;
+	
+	@FXML
+	private CheckBox checkBoxServiceFee;
 	
 	@FXML
 	private TextField txtOrderValue;
@@ -53,7 +58,7 @@ public class IfoodOrderFormController implements Initializable {
 	private ComboBox<String> comboBoxCutQuestion;
 	
 	@FXML
-	private ComboBox<String> comboBoxPayment;
+	private ComboBox<PaymentMethod> comboBoxPayment;
 	
 	@FXML
 	private TextField txtPaymentValue;
@@ -75,7 +80,7 @@ public class IfoodOrderFormController implements Initializable {
 	
 	private ObservableList<String> obsCut;
 	
-	private ObservableList<String> obsPayemnt;
+	private ObservableList<PaymentMethod> obsPayemnt;
 	
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
@@ -96,6 +101,7 @@ public class IfoodOrderFormController implements Initializable {
 			setErrorMessages(e.getErrors());
 		}
 		catch (DbException e) {
+			e.printStackTrace();
 			Alerts.showAlert("Error in saving Ifood Order", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
@@ -119,7 +125,7 @@ public class IfoodOrderFormController implements Initializable {
 		this.entity = entity;
 	}
 	
-	public void setIfoodOrderService(IfoodOrderService service) {
+	public void setIfoodOrderService(OrderService service) {
 		this.service = service;
 	}
 	
@@ -129,37 +135,55 @@ public class IfoodOrderFormController implements Initializable {
 	}
 	
 	public void initializeNodes() {
-		Constraints.setTextFieldInteger(txtId);
 		Constraints.setTextFieldDouble(txtOrderValue);
 		Constraints.setTextFieldDouble(txtDeliveryValue);
 		Constraints.setTextFieldDouble(txtPaymentValue);
+		Utils.formatDatePicker(dpPurchaseDate, "dd/MM/yyyy");
 		loadAssociatedObjects();
-		initializeComboBoxCutQuestion();
-		initializeComboBoxPayment();
 	}
 	
 	public IfoodOrder getFormData() {
-		Order order = new Order();
-		IfoodOrder obj = new IfoodOrder(order);
+		IfoodOrder obj = new IfoodOrder();
+		
+		if(checkBoxServiceFee.isSelected()) {
+			obj.setServiceFee(1);
+		}
 		
 		ValidationExceptions exception = new ValidationExceptions("Validation error");
 		
+		if(dpPurchaseDate != null && dpPurchaseDate.getValue() != null) {
+			obj.setDate(dpPurchaseDate.getValue());
+		}
+		else {
+			obj.setDate(LocalDate.now());
+		}
 		if (txtOrderValue.getText() == null || txtOrderValue.getText().trim().equals("")) {
 			exception.addError("orderValue", "Field can't be empty");
 		}
-		order.setOrderValue(new BigDecimal(txtOrderValue.getText()));
+		obj.setOrderValue(new BigDecimal(txtOrderValue.getText()));
 		
 		if (txtDeliveryValue.getText() == null || txtDeliveryValue.getText().trim().equals("")){
 			exception.addError("deliveryValue", "Field can't be empty");
 		}
-		order.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
-		obj.setPaymentMethods(PaymentMethod.valueOf(comboBoxPayment.getValue()));
-		if (comboBoxCutQuestion.getValue() == "Sim") {
-			if (txtPaymentValue.getText() == null || txtPaymentValue.getText().trim().equals("") || Utils.tryParseToDouble(txtPaymentValue.getText()) == 0.00) {
-				exception.addError("paymentValue", "Field can't be empty");
+		obj.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
+		obj.setPaymentMethods(comboBoxPayment.getValue());
+		if(comboBoxPayment.getValue() == PaymentMethod.IFOOD) {
+			obj.feeForIfood();
+			obj.setCategory(Category.VIA_IFOOD);
+		}
+		else {
+			obj.setCategory(Category.VIA_LOJA);
+			if (comboBoxCutQuestion.getValue() == "Sim") {
+				if (txtPaymentValue.getText() == null || txtPaymentValue.getText().trim().equals("") || Utils.tryParseToDouble(txtPaymentValue.getText()) == 0.00) {
+					exception.addError("paymentValue", "Field can't be empty");
+				}
+				obj.setIfoodPaymentValue(new BigDecimal(txtPaymentValue.getText()));
+				obj.cutPayments();
+				}
+			else {
+				obj.feeForStore();
 			}
-			obj.setIfoodPaymentValue(new BigDecimal(txtPaymentValue.getText()));
-			}
+		}
 		
 		if(!exception.getErrors().isEmpty()) {
 			throw exception;
@@ -171,9 +195,11 @@ public class IfoodOrderFormController implements Initializable {
 		if(entity == null) {
 			throw new IllegalStateException("Entity was null");
 		}
-		txtOrderValue.setText(entity.getOrderValue().toString());
-		txtDeliveryValue.setText(entity.getDeliveryValue().toString());
-		txtPaymentValue.setText(entity.getIfoodPaymentValue().toString());
+		if(entity.getId() != null) {
+			txtOrderValue.setText(entity.getOrderValue().toString());
+			txtDeliveryValue.setText(entity.getDeliveryValue().toString());
+			txtPaymentValue.setText(entity.getIfoodPaymentValue().toString());
+		}
 		comboBoxCutQuestion.getSelectionModel().selectFirst();
 	}
 	
@@ -187,44 +213,14 @@ public class IfoodOrderFormController implements Initializable {
 	
 	public void loadAssociatedObjects() {
 		List<String> cut = new ArrayList<>();
-		List<String> payment = new ArrayList<>();
 		
-		cut.add("Sim");
-		cut.add("Não");
-		
-		payment.add("Dinheiro");
-		payment.add("Cartão");
-		payment.add("Pix");
+		cut.addAll(Arrays.asList("Sim", "Não"));
 		
 		obsCut = FXCollections.observableArrayList(cut);
-		obsPayemnt = FXCollections.observableArrayList(payment);
+		obsPayemnt = FXCollections.observableArrayList(PaymentMethod.values());
 		
 		comboBoxCutQuestion.setItems(obsCut);
 		comboBoxPayment.setItems(obsPayemnt);
-	}
-	
-	private void initializeComboBoxCutQuestion() {
-		Callback<ListView<String>, ListCell<String>> factory = lv -> new ListCell<String>() {
-			@Override
-			protected void updateItem(String item, boolean empty) {
-				super.updateItem(item, empty);
-				setText(empty ? "" : item);
-			}
-		};
-		comboBoxCutQuestion.setCellFactory(factory);
-		comboBoxCutQuestion.setButtonCell(factory.call(null));
-	}
-	
-	private void initializeComboBoxPayment() {
-		Callback<ListView<String>, ListCell<String>> factory = lv -> new ListCell<String>() {
-			@Override
-			protected void updateItem(String item, boolean empty) {
-				super.updateItem(item, empty);
-				setText(empty ? "" : item);
-			}
-		};
-		comboBoxPayment.setCellFactory(factory);
-		comboBoxPayment.setButtonCell(factory.call(null));
 	}
 
 }

@@ -1,10 +1,12 @@
 package gui;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import application.Main;
 import gui.listeners.DataChangeListener;
@@ -34,23 +36,23 @@ import javafx.stage.Stage;
 import model.entities.IfoodOrder;
 import model.entities.Order;
 import model.exceptions.DbException;
-import model.services.IfoodOrderService;
+import model.services.OrderService;
 
 public class IfoodOrderListController implements Initializable, DataChangeListener {
 
-	private IfoodOrderService service;
+	private OrderService service;
 
 	@FXML
 	private TableView<IfoodOrder> tableViewIfoodOrder;
 
 	@FXML
-	private TableColumn<IfoodOrder, Integer> tableColumnId;
+	private TableColumn<IfoodOrder, Long> tableColumnId;
 
 	@FXML
-	private TableColumn<IfoodOrder, Double> tableColumnOrderValue;
+	private TableColumn<IfoodOrder, BigDecimal> tableColumnOrderValue;
 
 	@FXML
-	private TableColumn<IfoodOrder, Double> tableColumnDeliveryValue;
+	private TableColumn<IfoodOrder, BigDecimal> tableColumnDeliveryValue;
 
 	@FXML
 	private TableColumn<IfoodOrder, String> tableColumnCategory;
@@ -80,12 +82,11 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 
 	public void initializaNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
-		tableColumnOrderValue.setCellValueFactory(new PropertyValueFactory<>("OrderValue"));
-		Utils.formatTableColumnDouble(tableColumnOrderValue, 2);
-		tableColumnDeliveryValue.setCellValueFactory(new PropertyValueFactory<>("DeliveryValue"));
-		Utils.formatTableColumnDouble(tableColumnDeliveryValue, 2);
-		tableColumnPaymentMethod.setCellValueFactory(
-				cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPaymentMethod().name()));
+		tableColumnOrderValue.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getOrderValue()));
+		Utils.formatTableColumnBigDecimal(tableColumnOrderValue, 2);
+		tableColumnDeliveryValue.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDeliveryValue()));
+		Utils.formatTableColumnBigDecimal(tableColumnDeliveryValue, 2);
+		tableColumnPaymentMethod.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPaymentMethod().name()));
 		tableColumnCategory.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCategory().name()));
 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
@@ -101,7 +102,12 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 		if (service == null) {
 			throw new IllegalStateException();
 		}
-		List<IfoodOrder> list = service.findAll();
+		List<Order> orders = service.findByType("IFOOD");
+
+		List<IfoodOrder> list = orders.stream()
+		                                   .map(order -> (IfoodOrder) order)
+		                                   .collect(Collectors.toList());
+		
 		obsList = FXCollections.observableArrayList(list);
 		tableViewIfoodOrder.setItems(obsList);
 		initRemoveButtons();
@@ -113,7 +119,7 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 			Pane pane = loader.load();
 
 			IfoodOrderFormController controller = loader.getController();
-			controller.setIfoodOrderService(new IfoodOrderService());
+			controller.setIfoodOrderService(new OrderService());
 			controller.subscribeDataChangeListener(this);
 			controller.setIfoodOrder(obj);
 			controller.updateFormData();
@@ -134,11 +140,11 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 		}
 	}
 
-	public IfoodOrderService getService() {
+	public OrderService getService() {
 		return service;
 	}
 
-	public void setService(IfoodOrderService service) {
+	public void setService(OrderService service) {
 		this.service = service;
 	}
 
