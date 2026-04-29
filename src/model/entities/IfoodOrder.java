@@ -2,12 +2,14 @@ package model.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import model.entities.enums.Category;
 
 public class IfoodOrder  extends Order implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	private BigDecimal ifoodDirectPaymentValue;
 	private BigDecimal ifoodPaymentValue;
 	private BigDecimal ifoodComission;
 	private Integer serviceFee;
@@ -17,7 +19,15 @@ public class IfoodOrder  extends Order implements Serializable {
 	}
 	
 	public IfoodOrder(Order order) {
-		super(order.getOrderValue(), order.getDeliveryValue(), order.getPaymentMethod(), order.getDate());
+		super(order.getOrderValue(), order.getDeliveryValue(), order.getPaymentMethod(), order.getType(), order.getDate());
+	}
+	
+	public BigDecimal getIfoodDirectPaymentValue() {
+		return ifoodDirectPaymentValue;
+	}
+
+	public void setIfoodDirectPaymentValue(BigDecimal ifoodDirectPaymentValue) {
+		this.ifoodDirectPaymentValue = ifoodDirectPaymentValue;
 	}
 
 	public BigDecimal getIfoodPaymentValue() {
@@ -41,9 +51,10 @@ public class IfoodOrder  extends Order implements Serializable {
 	}
 	
 	public void setServiceFee(Integer serviceFee) {
+		this.ifoodComission = ifoodComission.subtract(new BigDecimal("0.11"));
 		this.serviceFee = serviceFee;
 	}
-	
+
 	public Category getCategory() {
 		return category;
 	}
@@ -53,17 +64,20 @@ public class IfoodOrder  extends Order implements Serializable {
 	}
 
 	public void feeForIfood() {
-		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.1720"));
+		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.1720")).setScale(3, RoundingMode.HALF_EVEN);
+		ifoodPaymentValue = this.getOrderValue();
 	}
 
 	public void feeForStore() {
-		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.12"));
+		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.12")).setScale(3, RoundingMode.HALF_EVEN);
+		ifoodDirectPaymentValue = this.getOrderValue();
 	}
 
 
 	public void cutPayments() {
-		BigDecimal orderValue = this.getOrderValue().add(ifoodPaymentValue);
+		ifoodPaymentValue = this.getOrderValue();
+		BigDecimal orderValue = this.getOrderValue().add(ifoodDirectPaymentValue != null ? ifoodDirectPaymentValue : BigDecimal.ZERO);
 		this.setOrderValue(orderValue);
-		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.12"));
+		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.12")).setScale(3, RoundingMode.HALF_EVEN);
 	}
 }

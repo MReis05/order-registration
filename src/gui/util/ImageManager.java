@@ -19,6 +19,8 @@ public class ImageManager {
 			imageCache.put("orderChart", new Image(ImageManager.class.getResourceAsStream(imagesPath + "order_chart.png")));
 			imageCache.put("directOrder", new Image(ImageManager.class.getResourceAsStream(imagesPath + "point_of_sale.png")));
 			imageCache.put("Order-history", new Image(ImageManager.class.getResourceAsStream(imagesPath + "Order-history.png")));
+			imageCache.put("searchSign", new Image(ImageManager.class.getResourceAsStream(imagesPath + "search_icon.png")));
+			imageCache.put("saveIcon", new Image(ImageManager.class.getResourceAsStream(imagesPath + "save_icon.png")));
 		}
 		catch (Exception e) {
 			Alerts.showAlert("", "Erro em carregar arquivos", "", AlertType.ERROR);

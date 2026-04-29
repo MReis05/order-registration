@@ -26,8 +26,6 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	private VBox contentHolder;
-	
-	private OrderService orderService;
 
 	@FXML
 	private Button btIfoodOrder;
@@ -37,9 +35,6 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	private Button btResult;
-	
-	@FXML
-	private Button btReset;
 	
 	@FXML
 	private Label screenInformation;
@@ -61,17 +56,9 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onBtResultAction() {
-		totalScreen("/gui/ResultsView.fxml");
-	}
-	
-	@FXML
-	public void onBtResetAllAction() {
-		 Optional<ButtonType> reset = Alerts.showConfirmation("Redefinir Dados", "Tem certeza que deseja apagar todos os dados de Ifood e PV?");
-		    if (reset.isPresent() && reset.get() == ButtonType.OK) {
-		        //ifoodOrderService.resetAll();
-		        //directOrderService.resetAll();
-		        Alerts.showAlert("Sucesso", null, "Todos os dados foram redefinidos.", AlertType.INFORMATION);
-		    }
+		loadView("/gui/ResultsView.fxml", (ResultsController controller) ->{
+			controller.setService(new OrderService());
+		}, "Balanço");
 	}
 	
 	public synchronized <T> void loadView(String absoluteView, Consumer<T> consumer, String channel) {
@@ -84,13 +71,17 @@ public class MainViewController implements Initializable {
 			
 			contentHolder.getChildren().addAll(newVbox.getChildren());
 			
-			if(channel.equals("Ifood")) {
+			switch(channel) {
+			case "Ifood":
 				screenInformation.setText("Pedidos Ifood");
-			}
-			else if (channel.equals("PV")) {
+				break;
+			case "PV":
 				screenInformation.setText("Pedidos PV");
+				break;
+			case "Balanço":
+				screenInformation.setText("Balanço do dia");
+				break;
 			}
-			
 			T controller = loader.getController();
 			consumer.accept(controller);
 		} catch (IOException e) {
@@ -98,35 +89,12 @@ public class MainViewController implements Initializable {
 			Alerts.showAlert("IO Exception", "Error in Loading view", e.getMessage(), AlertType.ERROR);
 		}
 	}
-	
-
-	private void totalScreen(String absoluteView) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteView));
-			VBox pane = loader.load();
-			
-			contentHolder.getChildren().clear();
-			screenInformation.setText("");
-			
-			contentHolder.getChildren().addAll(pane.getChildren());
-			screenInformation.setText("Balanço do dia");
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			Alerts.showAlert("IOException", "Error in loading view", e.getMessage(), AlertType.ERROR);
-		}
-	}
-	
-	public void setOrderService(OrderService service) {
-		this.orderService = service;
-	}
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		ImageView delivery_bike = new ImageView(ImageManager.getImage("ifoodOrder"));
 		ImageView order_chart = new ImageView(ImageManager.getImage("orderChart"));
 		ImageView point_of_sale = new ImageView(ImageManager.getImage("directOrder"));
-		ImageView reset = new ImageView(ImageManager.getImage("reset"));
 		
 		delivery_bike.setFitHeight(32);
 		delivery_bike.setFitWidth(32);
@@ -137,12 +105,8 @@ public class MainViewController implements Initializable {
 		point_of_sale.setFitHeight(32);
 		point_of_sale.setFitWidth(32);
 		
-		reset.setFitHeight(23);
-		reset.setFitWidth(23);
-		
 		btDirectOrder.setGraphic(point_of_sale);
 		btIfoodOrder.setGraphic(delivery_bike);
-		btReset.setGraphic(reset);
 		btResult.setGraphic(order_chart);
 	}
 }

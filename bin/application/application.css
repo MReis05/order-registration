@@ -26,34 +26,9 @@
 	-fx-background-color: #E53935;
 }
 
-.reset-button {
-	-fx-text-fill: #FFFFFF;
-	-fx-background-color: #5A5A5A;
-	-fx-background-radius: 5px;
-	-fx-border-radius: 5px;
-	-fx-font-size: 14px;
-	-fx-padding: 8px 15px;
-	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.5, 0, 1);
-	-fx-alignment: CENTER_LEFT;
-    -fx-font-weight: bold;
-    -fx-cursor:hand;
-}
-
-.reset-button:hover {
-    -fx-background-color: #4A4A4A; 
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0.5, 0, 2); 
-}
-
-.reset-button:pressed {
-    -fx-background-color: #3A3A3A; 
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0.5, 0, 0);
-}
-
- #screenIformation{
- 	-fx-font-family: "Montserrat";
-	-fx-font-fill: black;
-	-fx-font-size: 24px;
-	-fx-font-weight: bold;
+.text-field, .combo-box, .date-picker {
+    -fx-font-family: "Lato";
+    -fx-font-size: 13px;
 }
 
 /*Telas de List */
@@ -68,6 +43,8 @@
 	-fx-alignment: CENTER_LEFT;
     -fx-font-weight: bold;
     -fx-cursor:hand;
+    -fx-border-color: transparent; 
+    -fx-border-width: 1px;
 }
 
 .new-button:hover{
@@ -78,6 +55,47 @@
 .new-button:pressed{
 	-fx-background-color: #B71C1C;
 	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0.5, 0, 0);
+}
+
+.new-button:focused {
+    -fx-border-color: #FFFFFF;
+}
+
+.settings-button {
+	-fx-text-fill: #FFFFFF;
+	-fx-background-color: #5A5A5A;
+	-fx-background-radius: 5px;
+	-fx-border-radius: 5px;
+	-fx-font-size: 14px;
+	-fx-padding: 8px 15px;
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0.5, 0, 1);
+	-fx-alignment: CENTER_LEFT;
+    -fx-font-weight: bold;
+    -fx-cursor:hand;
+    -fx-border-color: transparent; 
+    -fx-border-width: 1px;
+}
+
+.settings-button:hover {
+    -fx-background-color: #4A4A4A; 
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0.5, 0, 2); 
+}
+
+.settings-button:pressed {
+    -fx-background-color: #3A3A3A; 
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0.5, 0, 0);
+}
+
+.settings-button:focused {
+    -fx-border-color: #FFFFFF;
+}
+
+.save-buttons{
+	-fx-padding: 6px 8px;
+}
+
+.settings-form{
+	-fx-padding: 5px 7px;
 }
 
 .table .column-header{
@@ -161,6 +179,17 @@
 }
 
 /*Tela de Resultado */
+
+
+.card-value {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px 20px; 
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 10, 0, 0, 4);
+    -fx-border-color: #D32F2F transparent transparent transparent; 
+    -fx-border-width: 4px 0 0 0; 
+    -fx-border-radius: 8px 8px 0 0;
+}
 
 .label-header-left{
 	fx-font-family: "Lato";

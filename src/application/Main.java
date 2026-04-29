@@ -2,7 +2,6 @@ package application;
 
 import java.io.IOException;
 
-import gui.MainViewController;
 import gui.util.ImageManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import model.services.OrderService;
 
 public class Main extends Application {
 
@@ -22,13 +20,14 @@ public class Main extends Application {
 			loadResources();
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
 			BorderPane borderPane = loader.load();
-			MainViewController controller = loader.getController();
-			controller.setOrderService(new OrderService());
 			mainScene = new Scene(borderPane);
 			mainScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.getIcons().add(ImageManager.getImage("Order-history"));
 			primaryStage.setScene(mainScene);
 			primaryStage.setTitle("Registro de Pedidos");
+			primaryStage.setWidth(800);
+	        primaryStage.setHeight(600);
+	        primaryStage.setMaximized(true);
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();

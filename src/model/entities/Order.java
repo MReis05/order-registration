@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import model.entities.enums.Type;
 import model.entities.enums.PaymentMethod;
 
 public class Order implements Serializable {
@@ -15,15 +16,17 @@ public class Order implements Serializable {
 	private BigDecimal orderValue;
 	private BigDecimal deliveryValue;
 	private PaymentMethod paymentMethod;
+	private Type type;
 	private LocalDate date;
 
 	public Order() {
 	}
 
-	public Order(BigDecimal orderValue, BigDecimal deliveryValue, PaymentMethod paymentMethod, LocalDate date) {
+	public Order(BigDecimal orderValue, BigDecimal deliveryValue, PaymentMethod paymentMethod, Type type, LocalDate date) {
 		this.orderValue = orderValue;
 		this.deliveryValue = deliveryValue;
 		this.paymentMethod = paymentMethod;
+		this.type = type;
 		this.date = date;
 	}
 
@@ -55,8 +58,16 @@ public class Order implements Serializable {
 		return paymentMethod;
 	}
 
-	public void setPaymentMethods(PaymentMethod paymentMethod) {
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
 		this.paymentMethod = paymentMethod;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public LocalDate getDate() {

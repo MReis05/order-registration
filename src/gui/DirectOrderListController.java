@@ -31,13 +31,13 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.DirectOrder;
 import model.entities.Order;
+import model.entities.enums.Type;
 import model.exceptions.DbException;
 import model.services.OrderService;
 
@@ -49,7 +49,7 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	private DatePicker dpDate;
 	
 	@FXML
-	private Button btsearch;
+	private Button btSearch;
 	
 	@FXML
 	private Button btclear;
@@ -70,7 +70,10 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	private TableColumn<DirectOrder, String> tableColumnPaymentMethod;
 	
 	@FXML
-	private TableColumn<DirectOrder, DirectOrder> tableColumnRemove;
+	private TableColumn<DirectOrder, DirectOrder> tableColumnRemoveButtons;
+	
+	@FXML
+	private TableColumn<DirectOrder, DirectOrder> tableColumnEditButtons;
 	
 	private ObservableList<DirectOrder> obsList;
 	
@@ -95,7 +98,7 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 		else {
 			date = LocalDate.now();
 		}
-		List<Order> orders = service.findByTypeAndDate("DIRECT", date);
+		List<Order> orders = service.findByTypeAndDate(Type.VIA_PEDIDO_DIRETO, date);
 
 		list = orders.stream().map(order -> (DirectOrder) order).collect(Collectors.toList());
 		
@@ -134,17 +137,23 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	
 	private void initializeResources() {
 		ImageView plus_sign = new ImageView(ImageManager.getImage("add"));
+		ImageView search_sign = new ImageView(ImageManager.getImage("searchSign"));
 		
 		plus_sign.setFitWidth(23);
 		plus_sign.setFitHeight(23);
 		
+		search_sign.setFitWidth(23);
+		search_sign.setFitHeight(23);
+		
 		btNew.setGraphic(plus_sign);
+		btSearch.setGraphic(search_sign);
 	}
 	
 	public void updateTableView() {
 		obsList = FXCollections.observableArrayList(list);
 		tableViewDirectOrder.setItems(obsList);
 		initRemoveButtons();
+		initEditButtons();
 	}
 	
 	private void dialogForm(DirectOrder obj, String absoluteView, Stage parentStage) {
@@ -183,8 +192,8 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	}
 
 	@Override
-	public <T> void dataChangeListeners(T obj) {
-		list.add((DirectOrder)obj);
+	public void dataChangeListeners() {
+		onBtSearchAction();
 		updateTableView();
 	}
 
@@ -195,6 +204,7 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 				throw new IllegalStateException("Serivce was null");
 			}
 			try {
+				list.remove(obj);
 				service.delete(obj);
 				Alerts.showAlert("Sucesso", "Pedido removido com sucesso", null, AlertType.INFORMATION);
 				updateTableView();
@@ -206,9 +216,9 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	}
 
 	private void initRemoveButtons() {
-		tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-		tableColumnRemove.setCellFactory(param -> new TableCell<DirectOrder, DirectOrder>() {
-			private final Button button = new Button("remover");
+		tableColumnRemoveButtons.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnRemoveButtons.setCellFactory(param -> new TableCell<DirectOrder, DirectOrder>() {
+			private final Button button = new Button("Remover");
 
 			@Override
 			protected void updateItem(DirectOrder obj, boolean empty) {
@@ -219,6 +229,24 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 				}
 				setGraphic(button);
 				button.setOnAction(event -> removeEntity(obj));
+			}
+		});
+	}
+	
+	private void initEditButtons() {
+		tableColumnEditButtons.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnEditButtons.setCellFactory(param -> new TableCell<DirectOrder, DirectOrder>() {
+			private final Button button = new Button("Editar");
+
+			@Override
+			protected void updateItem(DirectOrder obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(event -> dialogForm(obj, "/gui/DirectOrderDialogForm.fxml", Utils.currentStage(event)));
 			}
 		});
 	}

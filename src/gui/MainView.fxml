@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="530.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainViewController">
 	<left>
@@ -29,26 +30,24 @@
 		</VBox>
 	</left>
 	<center>
-		<VBox>
+		<VBox BorderPane.alignment="CENTER">
 			<children>
 				<Label id="screenIformation" fx:id="screenInformation">
 					<VBox.margin>
-						<Insets top="10.0" />
+						<Insets bottom="20.0" top="10.0" />
 					</VBox.margin>
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
 				</Label>
-				<Button fx:id="btReset" mnemonicParsing="false" onAction="#onBtResetAllAction" styleClass="reset-button" text="Resetar Dados">
+				<VBox fx:id="contentHolder" VBox.vgrow="ALWAYS">
 					<VBox.margin>
-						<Insets bottom="5.0" top="20.0" />
-					</VBox.margin>
-				</Button>
-				<VBox fx:id="contentHolder">
-					<VBox.margin>
-						<Insets left="-15.0" />
+						<Insets />
 					</VBox.margin>
 				</VBox>
 			</children>
          <BorderPane.margin>
-            <Insets left="15.0" />
+            <Insets />
          </BorderPane.margin>
 		</VBox>
 	</center>

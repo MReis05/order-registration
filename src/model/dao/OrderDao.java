@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import model.entities.Order;
+import model.entities.DTO.OrderDTO;
+import model.entities.enums.Type;
 
 public interface OrderDao {
 
@@ -11,5 +13,6 @@ public interface OrderDao {
 	void update (Order obj);
 	void deleteById (Long id);
 	List<Order> findAll();
-	List<Order> findByTypeAndDate(String type, LocalDate date);
+	List<Order> findByTypeAndDate(Type type, LocalDate date);
+	OrderDTO getTotalsByDate(LocalDate date, LocalDate finalDate);
 }

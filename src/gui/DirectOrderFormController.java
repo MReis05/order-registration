@@ -12,6 +12,7 @@ import java.util.Set;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
+import gui.util.ImageManager;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,15 +25,17 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import model.entities.DirectOrder;
 import model.entities.enums.PaymentMethod;
+import model.entities.enums.Type;
 import model.exceptions.DbException;
 import model.exceptions.ValidationExceptions;
 import model.services.OrderService;
 
 public class DirectOrderFormController implements Initializable {
 	
-	private DirectOrder entity;
+	private DirectOrder order;
 	
 	private OrderService service;
 	
@@ -69,7 +72,7 @@ public class DirectOrderFormController implements Initializable {
 	
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
-		if(entity == null) {
+		if(order == null) {
 			throw new IllegalStateException("Entity was null");
 		}
 		if(service == null) {
@@ -77,9 +80,9 @@ public class DirectOrderFormController implements Initializable {
 		}
 		
 		try {
-			entity = getFormData();
-			service.saveOrUpdate(entity);
-			notifyDataChangeListeners(entity);
+			order = getFormData();
+			service.saveOrUpdate(order);
+			notifyDataChangeListeners();
 			Utils.currentStage(event).close();
 		}
 		catch (ValidationExceptions e) {
@@ -90,9 +93,9 @@ public class DirectOrderFormController implements Initializable {
 		}
 	}
 	
-	private void notifyDataChangeListeners(DirectOrder entity) {
+	private void notifyDataChangeListeners() {
 		for (DataChangeListener listener : dataChangeListeners) {
-			listener.dataChangeListeners(entity);
+			listener.dataChangeListeners();
 		}
 	}
 	
@@ -105,8 +108,8 @@ public class DirectOrderFormController implements Initializable {
 		Utils.currentStage(event).close();
 	}
 	
-	public void setDirectOrder(DirectOrder entity) {
-		this.entity = entity;
+	public void setDirectOrder(DirectOrder order) {
+		this.order = order;
 	}
 	
 	public void setDirectOrderService(OrderService service) {
@@ -118,59 +121,69 @@ public class DirectOrderFormController implements Initializable {
 		initializeNodes();
 	}
 	
-	public void initializeNodes() {
+	private void initializeNodes() {
 		Utils.formatDatePicker(dpPurchaseDate, "dd/MM/yyyy");
 		Constraints.setTextFieldDouble(txtOrderValue);
 		Constraints.setTextFieldDouble(txtDeliveryValue);
 		loadAssociatedObjects();
+		initializeResources();
+	}
+	
+	private void initializeResources() {
+		ImageView saveIcon = new ImageView(ImageManager.getImage("saveIcon"));
+		
+		saveIcon.setFitHeight(23);
+		saveIcon.setFitWidth(23);
+		
+		btSave.setGraphic(saveIcon);
 	}
 	
 	public DirectOrder getFormData() {
 		labelErrorDeliveryValue.setText("");
 		labelErrorOrderValue.setText("");
 		labelErrorPaymentMethod.setText("");
-		DirectOrder obj = new DirectOrder();
 		
 		ValidationExceptions exception = new ValidationExceptions("Validation error");
 		
+		order.setType(Type.VIA_PEDIDO_DIRETO);
+		
 		if(dpPurchaseDate != null && dpPurchaseDate.getValue() != null) {
-			obj.setDate(dpPurchaseDate.getValue());
+			order.setDate(dpPurchaseDate.getValue());
 		}
 		else {
-			obj.setDate(LocalDate.now());
+			order.setDate(LocalDate.now());
 		}
 		
 		if(txtOrderValue.getText() == null || txtOrderValue.getText().trim().equals("")) {
 			exception.addError("orderValue", "Field can't be empty");
 		}
-		obj.setOrderValue(new BigDecimal(txtOrderValue.getText()));
+		order.setOrderValue(new BigDecimal(txtOrderValue.getText()));
 		if(txtDeliveryValue.getText() == null || txtDeliveryValue.getText().trim().equals("")) {
 			exception.addError("deliveryValue", "Field can't be empty");
 		}
-		obj.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
+		order.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
 		
 		if(comboBoxPayment.getValue() == PaymentMethod.IFOOD || comboBoxPayment.getValue() == null) {
 			exception.addError("paymentMethod", "You must select a payment method other than Ifood");
 		}
-		obj.setPaymentMethods(comboBoxPayment.getValue());
+		order.setPaymentMethod(comboBoxPayment.getValue());
 		
 		if(!exception.getErrors().isEmpty()) {
 			throw exception;
 		}
 		
-		return obj;
+		return order;
 	}
 
 	public void updateFormData() {
-		if(entity == null) {
+		if(order == null) {
 			throw new IllegalStateException("Entity was null");
 		}
-		if(entity.getId() != null) {
-			txtOrderValue.setText(entity.getOrderValue().toString());
-			txtDeliveryValue.setText(entity.getDeliveryValue().toString());
-			if(entity.getPaymentMethod() != null) {
-				comboBoxPayment.setValue(entity.getPaymentMethod());
-			}
+		if(order.getId() != null) {
+			dpPurchaseDate.setValue(order.getDate());
+			txtOrderValue.setText(order.getOrderValue().toString());
+			txtDeliveryValue.setText(order.getDeliveryValue().toString());
+			comboBoxPayment.setValue(order.getPaymentMethod());
 		}
 	}
 	

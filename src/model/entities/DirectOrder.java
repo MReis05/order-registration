@@ -9,7 +9,7 @@ public class DirectOrder extends Order implements Serializable {
 	}
 	
 	public DirectOrder(Order order) {
-		super(order.getOrderValue(), order.getDeliveryValue(), order.getPaymentMethod(), order.getDate());
+		super(order.getOrderValue(), order.getDeliveryValue(), order.getPaymentMethod(), order.getType(), order.getDate());
 	}
 
 }

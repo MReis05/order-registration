@@ -1,15 +1,36 @@
 package gui;
 
 import java.net.URL;
-import java.util.Map;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import gui.util.ImageManager;
+import gui.util.Utils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import model.entities.DTO.OrderDTO;
+import model.services.OrderService;
 
 public class ResultsController implements Initializable {
+	
+	private OrderService service;
+	
+	@FXML
+	private DatePicker dpDate;
+	
+	@FXML
+	private DatePicker dpFinalDate;
+	
+	@FXML
+	private Button btSearch;
+	
+	@FXML
+	private Button btClear;
 	
 	@FXML
 	private Label labelTotal;
@@ -30,10 +51,7 @@ public class ResultsController implements Initializable {
 	private Label labelIfoodComissionTotal;
 	
 	@FXML
-	private Label labelServiceFeePTotal;
-	
-	@FXML
-	private Label labelServiceFeeTTotal;
+	private Label labelServiceFeeTotal;
 	
 	@FXML
 	private Label labelCashTotal;
@@ -44,22 +62,54 @@ public class ResultsController implements Initializable {
 	@FXML
 	private Label labelPixTotal;
 	
-	public void setResult(Map<String, Double> results) {
-		Set<String> fields = results.keySet();
-		labelTotal.setText((fields.contains("totalValue") ? String.format("%.2f", results.get("totalValue")) : ""));
-		labelIfoodTotal.setText((fields.contains("ifoodTotal") ? String.format("%.2f", results.get("ifoodTotal")) : ""));
-		labelDirectOrderTotal.setText((fields.contains("directOrderTotal") ? String.format("%.2f", results.get("directOrderTotal")) : ""));
-		labelDeliveryTotal.setText((fields.contains("deliveryTotal") ? String.format("%.2f", results.get("deliveryTotal")) : ""));
-		labelIfoodPaymentValueTotal.setText((fields.contains("ifoodPaymentValueTotal") ? String.format("%.2f", results.get("ifoodPaymentValueTotal")) : ""));
-		labelIfoodComissionTotal.setText((fields.contains("ifoodComissionTotal") ? String.format("%.2f", results.get("ifoodComissionTotal")) : ""));
-		labelServiceFeePTotal.setText((fields.contains("serviceFeePTotal") ? String.valueOf(((Double)results.get("serviceFeePTotal")).intValue()) : ""));
-		labelServiceFeeTTotal.setText((fields.contains("serviceFeePTotal") ? String.valueOf(((Double)results.get("serviceFeeTTotal")).intValue()) : ""));
-		labelCashTotal.setText((fields.contains("cashTotal") ? String.format("%.2f", results.get("cashTotal")) : ""));
-		labelCardTotal.setText((fields.contains("cardTotal") ? String.format("%.2f", results.get("cardTotal")) : ""));
-		labelPixTotal.setText((fields.contains("pixTotal") ? String.format("%.2f", results.get("pixTotal")) : ""));
+	@FXML
+	public void onBtSearchAction() {
+		LocalDate startDate = dpDate.getValue();
+		LocalDate finalDate = dpFinalDate.getValue();
+		
+		if(dpFinalDate.getEditor().getText().trim().isEmpty()) {
+			finalDate = startDate;
+			dpFinalDate.setValue(finalDate);
+		}
+		
+		setResult(service.getTotalsByDate(startDate, finalDate));
+	}
+	
+	private void setResult(OrderDTO dto) {
+		labelTotal.setText("R$ " + dto.getTotalValue().toString());
+		labelIfoodTotal.setText("R$ " + dto.getIfoodOrderTotalValue().toString());
+		labelDirectOrderTotal.setText("R$ " + dto.getDirectOrderTotalValue().toString());
+		labelDeliveryTotal.setText("R$ " + dto.getDeliveryValue());
+		labelIfoodPaymentValueTotal.setText("R$ " + dto.getIfoodPaymentValue());
+		labelIfoodComissionTotal.setText("RS " + dto.getIfoodComission());
+		labelServiceFeeTotal.setText(String.valueOf(((Integer)dto.getServiceFee().intValue())));
+		labelCashTotal.setText("R$ " + dto.getCashTotalValue().toString());
+		labelCardTotal.setText("R$ " + dto.getCardTotalValue().toString());
+		labelPixTotal.setText("R$ " + dto.getPixTotalValue().toString());
 	}
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
+		Utils.formatDatePicker(dpDate, "dd/MM/yyyy");
+		Utils.formatDatePicker(dpFinalDate, "dd/MM/yyyy");
+		initializeResources();
+	}
+	
+	private void initializeResources() {
+		ImageView search_sign = new ImageView(ImageManager.getImage("searchSign"));
+		
+		
+		search_sign.setFitWidth(23);
+		search_sign.setFitHeight(23);
+		
+		btSearch.setGraphic(search_sign);
+	}
+
+	public OrderService getService() {
+		return service;
+	}
+
+	public void setService(OrderService service) {
+		this.service = service;
 	}
 }

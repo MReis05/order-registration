@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS orders (
 
     ifood_payment_value DECIMAL(10, 2),
     ifood_comission DECIMAL(10, 2),
+    ifood_direct_payment_value DECIMAL(10, 2),
     service_fee INT,
     category VARCHAR(50)
 );

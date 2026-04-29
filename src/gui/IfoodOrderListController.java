@@ -37,6 +37,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.IfoodOrder;
 import model.entities.Order;
+import model.entities.enums.Type;
 import model.exceptions.DbException;
 import model.services.OrderService;
 
@@ -66,13 +67,13 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	private TableColumn<IfoodOrder, BigDecimal> tableColumnDeliveryValue;
 
 	@FXML
-	private TableColumn<IfoodOrder, String> tableColumnCategory;
-
-	@FXML
 	private TableColumn<IfoodOrder, String> tableColumnPaymentMethod;
 
 	@FXML
-	private TableColumn<IfoodOrder, IfoodOrder> tableColumnRemove;
+	private TableColumn<IfoodOrder, IfoodOrder> tableColumnRemoveButtons;
+	
+	@FXML
+	private TableColumn<IfoodOrder, IfoodOrder> tableColumnEditButtons;
 
 	private ObservableList<IfoodOrder> obsList;
 	
@@ -97,7 +98,7 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 		else {
 			date = LocalDate.now();
 		}
-		List<Order> orders = service.findByTypeAndDate("IFOOD", date);
+		List<Order> orders = service.findByTypeAndDate(Type.VIA_IFOOD, date);
 
 		list = orders.stream().map(order -> (IfoodOrder) order).collect(Collectors.toList());
 		                                  
@@ -129,8 +130,6 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 		Utils.formatTableColumnBigDecimal(tableColumnDeliveryValue, 2);
 		tableColumnPaymentMethod.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getPaymentMethod().name()));
 		Utils.formatTableColumnStringCamelCase(tableColumnPaymentMethod);
-		tableColumnCategory.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCategory().name()));
-		Utils.formatTableColumnStringCamelCase(tableColumnCategory);
 		
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewIfoodOrder.prefHeightProperty().bind(stage.heightProperty());
@@ -138,17 +137,23 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	
 	private void initializeResources() {
 		ImageView plus_sign = new ImageView(ImageManager.getImage("add"));
+		ImageView search_sign = new ImageView(ImageManager.getImage("searchSign"));
 		
 		plus_sign.setFitHeight(23);
 		plus_sign.setFitWidth(23);
 		
+		search_sign.setFitHeight(23);
+		search_sign.setFitWidth(23);
+		
 		btNew.setGraphic(plus_sign);
+		btSearch.setGraphic(search_sign);
 	}
 
 	public void updateTableView() {
 		obsList = FXCollections.observableArrayList(list);
 		tableViewIfoodOrder.setItems(obsList);
 		initRemoveButtons();
+		initEditButtons();
 	}
 
 	private void dialogForm(IfoodOrder obj, String absoluteView, Stage parentStage) {
@@ -187,8 +192,8 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	}
 
 	@Override
-	public <T> void dataChangeListeners(T obj) {
-		list.add((IfoodOrder) obj);
+	public void dataChangeListeners() {
+		onBtSearchAction();
 		updateTableView();
 
 	}
@@ -212,8 +217,8 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	}
 	
 	private void initRemoveButtons() {
-		tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-		tableColumnRemove.setCellFactory(param -> new TableCell<IfoodOrder, IfoodOrder>() {
+		tableColumnRemoveButtons.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnRemoveButtons.setCellFactory(param -> new TableCell<IfoodOrder, IfoodOrder>() {
 			private final Button button = new Button("remover");
 			
 
@@ -226,6 +231,24 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 				}
 				setGraphic(button);
 				button.setOnAction(event -> removeEntity(obj));
+			}
+		});
+	}
+	
+	private void initEditButtons() {
+		tableColumnEditButtons.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnEditButtons.setCellFactory(param -> new TableCell<IfoodOrder, IfoodOrder>() {
+			private final Button button = new Button("Editar");
+
+			@Override
+			protected void updateItem(IfoodOrder obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(event -> dialogForm(obj, "/gui/IfoodOrderDialogForm.fxml", Utils.currentStage(event)));
 			}
 		});
 	}

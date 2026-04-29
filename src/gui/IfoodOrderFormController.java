@@ -13,6 +13,7 @@ import java.util.Set;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
+import gui.util.ImageManager;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -29,13 +31,14 @@ import javafx.scene.control.TextField;
 import model.entities.IfoodOrder;
 import model.entities.enums.Category;
 import model.entities.enums.PaymentMethod;
+import model.entities.enums.Type;
 import model.exceptions.DbException;
 import model.exceptions.ValidationExceptions;
 import model.services.OrderService;
 
 public class IfoodOrderFormController implements Initializable {
 	
-	private IfoodOrder entity;
+	private IfoodOrder order;
 	
 	private OrderService service;
 	
@@ -86,7 +89,7 @@ public class IfoodOrderFormController implements Initializable {
 	
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
-		if(entity == null) {
+		if(order == null) {
 			throw new IllegalStateException("Entity was null");
 		}
 		if(service == null) {
@@ -94,9 +97,9 @@ public class IfoodOrderFormController implements Initializable {
 		}
 		
 		try {
-			entity = getFormData();
-			service.saveOrUpdate(entity);
-			notifyDataChangeListeners(entity);
+			order = getFormData();
+			service.saveOrUpdate(order);
+			notifyDataChangeListeners();
 			Utils.currentStage(event).close();
 		}
 		catch (ValidationExceptions e) {
@@ -108,9 +111,9 @@ public class IfoodOrderFormController implements Initializable {
 		}
 	}
 	
-	private void notifyDataChangeListeners(IfoodOrder obj) {
+	private void notifyDataChangeListeners() {
 		for (DataChangeListener listener : dataChangeListeners) {
-			listener.dataChangeListeners(obj);
+			listener.dataChangeListeners();
 		}
 	}
 	
@@ -123,8 +126,8 @@ public class IfoodOrderFormController implements Initializable {
 		Utils.currentStage(event).close();
 	}
 	
-	public void setIfoodOrder(IfoodOrder entity) {
-		this.entity = entity;
+	public void setIfoodOrder(IfoodOrder order) {
+		this.order = order;
 	}
 	
 	public void setIfoodOrderService(OrderService service) {
@@ -136,12 +139,22 @@ public class IfoodOrderFormController implements Initializable {
 		initializeNodes();
 	}
 	
-	public void initializeNodes() {
+	private void initializeNodes() {
 		Constraints.setTextFieldDouble(txtOrderValue);
 		Constraints.setTextFieldDouble(txtDeliveryValue);
 		Constraints.setTextFieldDouble(txtPaymentValue);
 		Utils.formatDatePicker(dpPurchaseDate, "dd/MM/yyyy");
 		loadAssociatedObjects();
+		initializeResources();
+	}
+	
+	private void initializeResources() {
+		ImageView saveIcon = new ImageView(ImageManager.getImage("saveIcon"));
+		
+		saveIcon.setFitHeight(23);
+		saveIcon.setFitWidth(23);
+		
+		btSave.setGraphic(saveIcon);
 	}
 	
 	public IfoodOrder getFormData() {
@@ -150,67 +163,69 @@ public class IfoodOrderFormController implements Initializable {
 		labelErrorPaymentMethod.setText("");
 		labelErrorPaymentValue.setText("");
 		
-		IfoodOrder obj = new IfoodOrder();
-		
-		if(checkBoxServiceFee.isSelected()) {
-			obj.setServiceFee(1);
-		}
-		
 		ValidationExceptions exception = new ValidationExceptions("Validation error");
 		
+		order.setType(Type.VIA_IFOOD);
+		
 		if(dpPurchaseDate != null && dpPurchaseDate.getValue() != null) {
-			obj.setDate(dpPurchaseDate.getValue());
+			order.setDate(dpPurchaseDate.getValue());
 		}
 		else {
-			obj.setDate(LocalDate.now());
+			order.setDate(LocalDate.now());
 		}
 		if (txtOrderValue.getText() == null || txtOrderValue.getText().trim().equals("")) {
 			exception.addError("orderValue", "Field can't be empty");
 		}
-		obj.setOrderValue(new BigDecimal(txtOrderValue.getText()));
+		order.setOrderValue(new BigDecimal(txtOrderValue.getText()));
 		
 		if (txtDeliveryValue.getText() == null || txtDeliveryValue.getText().trim().equals("")){
 			exception.addError("deliveryValue", "Field can't be empty");
 		}
-		obj.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
+		order.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
 		
 		if(comboBoxPayment.getValue() == null) {
 			exception.addError("paymentMethod", "You must select one Payment method");
 		}
 		
-		obj.setPaymentMethods(comboBoxPayment.getValue());
+		order.setPaymentMethod(comboBoxPayment.getValue());
 		if(comboBoxPayment.getValue() == PaymentMethod.IFOOD) {
-			obj.feeForIfood();
-			obj.setCategory(Category.VIA_IFOOD);
+			order.feeForIfood();
+			order.setCategory(Category.VIA_IFOOD);
 		}
 		else {
-			obj.setCategory(Category.VIA_LOJA);
+			order.setCategory(Category.VIA_LOJA);
 			if ("Sim".equals(comboBoxCutQuestion.getValue())) {
 				if (txtPaymentValue.getText() == null || txtPaymentValue.getText().trim().equals("") || Utils.tryParseToDouble(txtPaymentValue.getText()) == 0.00) {
 					exception.addError("paymentValue", "Field can't be empty");
 				}
-				obj.setIfoodPaymentValue(new BigDecimal(txtPaymentValue.getText()));
-				obj.cutPayments();
+				order.setIfoodDirectPaymentValue(new BigDecimal(txtPaymentValue.getText()));
+				order.cutPayments();
 				}
 			else {
-				obj.feeForStore();
+				order.feeForStore();
 			}
+		}
+		
+		if(checkBoxServiceFee.isSelected()) {
+			order.setServiceFee(1);
 		}
 		
 		if(!exception.getErrors().isEmpty()) {
 			throw exception;
 		}
-		return obj;
+		return order;
 	}
 
 	public void updateFormData() {
-		if(entity == null) {
+		if(order == null) {
 			throw new IllegalStateException("Entity was null");
 		}
-		if(entity.getId() != null) {
-			txtOrderValue.setText(entity.getOrderValue().toString());
-			txtDeliveryValue.setText(entity.getDeliveryValue().toString());
-			txtPaymentValue.setText(entity.getIfoodPaymentValue().toString());
+		if(order.getId() != null) {
+			dpPurchaseDate.setValue(order.getDate());
+			txtOrderValue.setText(order.getOrderValue().toString());
+			txtDeliveryValue.setText(order.getDeliveryValue().toString());
+			txtPaymentValue.setText(order.getIfoodDirectPaymentValue().toString());
+			comboBoxPayment.setValue(order.getPaymentMethod());
 		}
 	}
 	
