@@ -5,6 +5,7 @@ import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 
 public class Alerts {
 	
@@ -13,6 +14,8 @@ public class Alerts {
 		alert.setTitle(title);
 		alert.setHeaderText(header);
 		alert.setContentText(content);
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(ImageManager.getImage("Order-history"));
 		alert.show();
 	}
 	
@@ -21,6 +24,8 @@ public class Alerts {
 		alert.setTitle(title);
 		alert.setHeaderText(null);
 		alert.setContentText(content);
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(ImageManager.getImage("Order-history"));
 		return alert.showAndWait();
 	}
 }

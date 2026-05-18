@@ -2,23 +2,21 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.ImageManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import model.services.OrderService;
 
@@ -64,12 +62,21 @@ public class MainViewController implements Initializable {
 	public synchronized <T> void loadView(String absoluteView, Consumer<T> consumer, String channel) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteView));
-			VBox newVbox = loader.load();
+			Node newView = loader.load(); 
 
 			contentHolder.getChildren().clear();
 			screenInformation.setText("");
+
+			contentHolder.getChildren().add(newView);
 			
-			contentHolder.getChildren().addAll(newVbox.getChildren());
+			if(newView instanceof AnchorPane) {
+				AnchorPane.setBottomAnchor((AnchorPane)newView, 0.00);
+				AnchorPane.setLeftAnchor((AnchorPane) newView, 0.00);
+				AnchorPane.setRightAnchor((AnchorPane) newView, 0.00);
+				AnchorPane.setTopAnchor((AnchorPane) newView, 0.00);
+			}
+			
+			VBox.setVgrow(newView, Priority.ALWAYS);
 			
 			switch(channel) {
 			case "Ifood":
@@ -92,21 +99,21 @@ public class MainViewController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		ImageView delivery_bike = new ImageView(ImageManager.getImage("ifoodOrder"));
-		ImageView order_chart = new ImageView(ImageManager.getImage("orderChart"));
-		ImageView point_of_sale = new ImageView(ImageManager.getImage("directOrder"));
+		ImageView deliveryBike = new ImageView(ImageManager.getImage("ifoodOrder"));
+		ImageView orderChart = new ImageView(ImageManager.getImage("orderChart"));
+		ImageView pointOfSale = new ImageView(ImageManager.getImage("directOrder"));
 		
-		delivery_bike.setFitHeight(32);
-		delivery_bike.setFitWidth(32);
+		deliveryBike.setFitHeight(32);
+		deliveryBike.setFitWidth(32);
 		
-		order_chart.setFitHeight(32);
-		order_chart.setFitWidth(32);
+		orderChart.setFitHeight(32);
+		orderChart.setFitWidth(32);
 		
-		point_of_sale.setFitHeight(32);
-		point_of_sale.setFitWidth(32);
+		pointOfSale.setFitHeight(32);
+		pointOfSale.setFitWidth(32);
 		
-		btDirectOrder.setGraphic(point_of_sale);
-		btIfoodOrder.setGraphic(delivery_bike);
-		btResult.setGraphic(order_chart);
+		btDirectOrder.setGraphic(pointOfSale);
+		btIfoodOrder.setGraphic(deliveryBike);
+		btResult.setGraphic(orderChart);
 	}
 }

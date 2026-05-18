@@ -107,7 +107,7 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	
 	@FXML
 	public void onBtClearAction() {
-		obsList.clear();
+		list.clear();
 		updateTableView();
 	}
 	
@@ -136,17 +136,17 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	}
 	
 	private void initializeResources() {
-		ImageView plus_sign = new ImageView(ImageManager.getImage("add"));
-		ImageView search_sign = new ImageView(ImageManager.getImage("searchSign"));
+		ImageView plusIcon = new ImageView(ImageManager.getImage("add"));
+		ImageView searchIcon = new ImageView(ImageManager.getImage("searchIcon"));
 		
-		plus_sign.setFitHeight(23);
-		plus_sign.setFitWidth(23);
+		plusIcon.setFitHeight(23);
+		plusIcon.setFitWidth(23);
 		
-		search_sign.setFitHeight(23);
-		search_sign.setFitWidth(23);
+		searchIcon.setFitHeight(23);
+		searchIcon.setFitWidth(23);
 		
-		btNew.setGraphic(plus_sign);
-		btSearch.setGraphic(search_sign);
+		btNew.setGraphic(plusIcon);
+		btSearch.setGraphic(searchIcon);
 	}
 
 	public void updateTableView() {
@@ -219,9 +219,8 @@ public class IfoodOrderListController implements Initializable, DataChangeListen
 	private void initRemoveButtons() {
 		tableColumnRemoveButtons.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
 		tableColumnRemoveButtons.setCellFactory(param -> new TableCell<IfoodOrder, IfoodOrder>() {
-			private final Button button = new Button("remover");
+			private final Button button = new Button("Remover");
 			
-
 			@Override
 			protected void updateItem(IfoodOrder obj, boolean empty) {
 				super.updateItem(obj, empty);

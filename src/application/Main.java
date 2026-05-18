@@ -25,8 +25,10 @@ public class Main extends Application {
 			primaryStage.getIcons().add(ImageManager.getImage("Order-history"));
 			primaryStage.setScene(mainScene);
 			primaryStage.setTitle("Registro de Pedidos");
-			primaryStage.setWidth(800);
-	        primaryStage.setHeight(600);
+			primaryStage.setWidth(1200);
+	        primaryStage.setHeight(700);
+	        primaryStage.setMinWidth(650);
+	        primaryStage.setMinHeight(600);
 	        primaryStage.setMaximized(true);
 			primaryStage.show();
 		} catch (IOException e) {

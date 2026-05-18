@@ -12,7 +12,7 @@ public class IfoodOrder  extends Order implements Serializable {
 	private BigDecimal ifoodDirectPaymentValue;
 	private BigDecimal ifoodPaymentValue;
 	private BigDecimal ifoodComission;
-	private Integer serviceFee;
+	private BigDecimal serviceFee;
 	private Category category;
 	
 	public IfoodOrder() {
@@ -46,11 +46,11 @@ public class IfoodOrder  extends Order implements Serializable {
 		return ifoodComission;
 	}
 
-	public Integer getServiceFee() {
+	public BigDecimal getServiceFee() {
 		return serviceFee;
 	}
 	
-	public void setServiceFee(Integer serviceFee) {
+	public void setServiceFee(BigDecimal serviceFee) {
 		this.ifoodComission = ifoodComission.subtract(new BigDecimal("0.11"));
 		this.serviceFee = serviceFee;
 	}
@@ -70,7 +70,6 @@ public class IfoodOrder  extends Order implements Serializable {
 
 	public void feeForStore() {
 		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.12")).setScale(3, RoundingMode.HALF_EVEN);
-		ifoodDirectPaymentValue = this.getOrderValue();
 	}
 
 
@@ -78,6 +77,5 @@ public class IfoodOrder  extends Order implements Serializable {
 		ifoodPaymentValue = this.getOrderValue();
 		BigDecimal orderValue = this.getOrderValue().add(ifoodDirectPaymentValue != null ? ifoodDirectPaymentValue : BigDecimal.ZERO);
 		this.setOrderValue(orderValue);
-		ifoodComission = this.getOrderValue().multiply(new BigDecimal("0.12")).setScale(3, RoundingMode.HALF_EVEN);
 	}
 }

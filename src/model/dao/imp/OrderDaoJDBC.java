@@ -53,7 +53,7 @@ public class OrderDaoJDBC implements OrderDao {
 	        	st.setString(6, ifood.getCategory().name());
 	            st.setBigDecimal(7, ifood.getIfoodComission());
 	            st.setBigDecimal(8, ifood.getIfoodPaymentValue() != null ? ifood.getIfoodPaymentValue() : BigDecimal.ZERO);
-	            st.setInt(9, ifood.getServiceFee() != null ? ifood.getServiceFee() : 0);
+	            st.setBigDecimal(9, ifood.getServiceFee() != null ? ifood.getServiceFee() : BigDecimal.ZERO);
 	            st.setBigDecimal(10, ifood.getIfoodDirectPaymentValue() != null ? ifood.getIfoodDirectPaymentValue() : BigDecimal.ZERO);
 	        }
 	        else {
@@ -105,7 +105,7 @@ public class OrderDaoJDBC implements OrderDao {
 	            st.setString(5, ifood.getCategory().name());
 	            st.setBigDecimal(6, ifood.getIfoodComission());
 	            st.setBigDecimal(7, ifood.getIfoodPaymentValue());
-	            st.setInt(8, ifood.getServiceFee());
+	            st.setBigDecimal(8, ifood.getServiceFee());
 	            st.setBigDecimal(9, ifood.getIfoodDirectPaymentValue());
 	        } else {
 	        	st.setNull(5, Types.VARCHAR);
@@ -237,7 +237,7 @@ public class OrderDaoJDBC implements OrderDao {
 	        if(rs.next()) {
 	        	OrderDTO obj = new OrderDTO(rs.getBigDecimal("total_orders"), rs.getBigDecimal("total_ifood"), rs.getBigDecimal("total_direct"),
 	        			rs.getBigDecimal("total_deliveries"), rs.getBigDecimal("total_ifood_payments"), rs.getBigDecimal("total_comissions"),
-	        			rs.getBigDecimal("total_cash"), rs.getBigDecimal("total_card"), rs.getBigDecimal("total_pix"), rs.getInt("total_fees"));
+	        			rs.getBigDecimal("total_cash"), rs.getBigDecimal("total_card"), rs.getBigDecimal("total_pix"), rs.getBigDecimal("total_fees"));
 	        	 return obj;
 	        }
 	        else {
@@ -262,7 +262,7 @@ public class OrderDaoJDBC implements OrderDao {
 		obj.setIfoodComission(rs.getBigDecimal("ifood_Comission"));
 		obj.setIfoodPaymentValue(rs.getBigDecimal("ifood_payment_value"));
 		obj.setIfoodDirectPaymentValue(rs.getBigDecimal("ifood_direct_payment_value"));
-		obj.setServiceFee(rs.getInt("service_fee"));
+		obj.setServiceFee(rs.getBigDecimal("service_fee"));
 		obj.setType(Type.valueOf(rs.getString("order_type")));
 		return obj;
 	}

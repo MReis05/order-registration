@@ -13,7 +13,7 @@ public class OrderDTO {
 	private BigDecimal cashTotalValue;
 	private BigDecimal cardTotalValue;
 	private BigDecimal pixTotalValue;
-	private Integer serviceFee;
+	private BigDecimal serviceFee;
 	
 	
 	public OrderDTO() {
@@ -21,13 +21,13 @@ public class OrderDTO {
 
 	public OrderDTO(BigDecimal totalValue, BigDecimal ifoodOrderTotalValue, BigDecimal directOrderTotalValue,
 			BigDecimal deliveryValue, BigDecimal ifoodPaymentValue, BigDecimal ifoodComission,
-			BigDecimal cashTotalValue, BigDecimal cardTotalValue, BigDecimal pixTotalValue, Integer serviceFee) {
+			BigDecimal cashTotalValue, BigDecimal cardTotalValue, BigDecimal pixTotalValue, BigDecimal serviceFee) {
 		super();
 		this.totalValue = totalValue != null ? totalValue : BigDecimal.ZERO;
 		this.deliveryValue = deliveryValue != null ? deliveryValue : BigDecimal.ZERO;
 		this.ifoodPaymentValue = ifoodPaymentValue != null ? ifoodPaymentValue : BigDecimal.ZERO;
 		this.ifoodComission = ifoodComission != null ? ifoodComission : BigDecimal.ZERO;
-		this.serviceFee = serviceFee != null ? serviceFee : 0;
+		this.serviceFee = serviceFee != null ? serviceFee : BigDecimal.ZERO;
 		this.cashTotalValue = cashTotalValue != null ? cashTotalValue : BigDecimal.ZERO;
 		this.cardTotalValue = cardTotalValue != null ? cardTotalValue : BigDecimal.ZERO;
 		this.pixTotalValue = pixTotalValue != null ? pixTotalValue : BigDecimal.ZERO;
@@ -125,12 +125,12 @@ public class OrderDTO {
 	}
 
 
-	public Integer getServiceFee() {
+	public BigDecimal getServiceFee() {
 		return serviceFee;
 	}
 
 
-	public void setServiceFee(Integer serviceFee) {
+	public void setServiceFee(BigDecimal serviceFee) {
 		this.serviceFee = serviceFee;
 	}
 }

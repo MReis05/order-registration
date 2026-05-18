@@ -136,17 +136,17 @@ public class DirectOrderListController implements Initializable, DataChangeListe
 	}
 	
 	private void initializeResources() {
-		ImageView plus_sign = new ImageView(ImageManager.getImage("add"));
-		ImageView search_sign = new ImageView(ImageManager.getImage("searchSign"));
+		ImageView plusIcon = new ImageView(ImageManager.getImage("add"));
+		ImageView searchIcon = new ImageView(ImageManager.getImage("searchIcon"));
 		
-		plus_sign.setFitWidth(23);
-		plus_sign.setFitHeight(23);
+		plusIcon.setFitWidth(23);
+		plusIcon.setFitHeight(23);
 		
-		search_sign.setFitWidth(23);
-		search_sign.setFitHeight(23);
+		searchIcon.setFitWidth(23);
+		searchIcon.setFitHeight(23);
 		
-		btNew.setGraphic(plus_sign);
-		btSearch.setGraphic(search_sign);
+		btNew.setGraphic(plusIcon);
+		btSearch.setGraphic(searchIcon);
 	}
 	
 	public void updateTableView() {

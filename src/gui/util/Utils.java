@@ -4,17 +4,19 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
-import javafx.beans.property.ReadOnlyIntegerWrapper;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import model.entities.enums.PaymentMethod;
 
 public class Utils {
 
@@ -123,18 +125,11 @@ public class Utils {
 					if(empty || item == null) {
 						setText(null);
 					}
-					else {
-						String[] words = item.toLowerCase().split("_");
-						StringBuilder result = new StringBuilder();
-						
-						for(String word : words) {
-							if(!word.isEmpty()) {
-							result.append(Character.toUpperCase(word.charAt(0)))
-		                     .append(word.substring(1))
-		                     .append(" ");
-							}
-						}
-						setText(result.toString().trim());
+					else {		
+						String word = Arrays.stream(item.split("_"))
+			                        .map(words -> words.substring(0, 1).toUpperCase() + words.substring(1).toLowerCase())
+			                        .collect(Collectors.joining(" "));
+						setText(word.trim());
 					}
 				}
 			};
@@ -184,5 +179,33 @@ public class Utils {
 				}
 			}
 		});
+	}
+	
+	public static void fomartComboBoxPaymentCamelCase(ComboBox<PaymentMethod> comboBox) {
+		comboBox.setConverter(new StringConverter<PaymentMethod>() {
+			
+            @Override
+            public String toString(PaymentMethod method) {
+                if (method == null) {
+                    return "";
+                }
+                return Arrays.stream(method.name().split("_"))
+                        .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
+                        .collect(Collectors.joining(" "));
+            }
+
+            @Override
+            public PaymentMethod fromString(String string) {
+                if (string == null || string.isEmpty()) {
+                    return null;
+                }
+                for (PaymentMethod paymentMethod : PaymentMethod.values()) {
+                    if (this.toString(paymentMethod).equals(string)) {
+                        return paymentMethod;
+                    }
+                }
+                return null;
+            }
+        });
 	}
 }

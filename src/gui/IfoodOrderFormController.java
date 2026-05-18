@@ -21,18 +21,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import model.entities.IfoodOrder;
 import model.entities.enums.Category;
 import model.entities.enums.PaymentMethod;
 import model.entities.enums.Type;
-import model.exceptions.DbException;
 import model.exceptions.ValidationExceptions;
 import model.services.OrderService;
 
@@ -75,9 +74,6 @@ public class IfoodOrderFormController implements Initializable {
 	private Label labelErrorPaymentValue;
 	
 	@FXML
-	private Label labelErrorPaymentMethod;
-	
-	@FXML
 	private Button btSave;
 	
 	@FXML
@@ -105,9 +101,8 @@ public class IfoodOrderFormController implements Initializable {
 		catch (ValidationExceptions e) {
 			setErrorMessages(e.getErrors());
 		}
-		catch (DbException e) {
-			e.printStackTrace();
-			Alerts.showAlert("Error in saving Ifood Order", null, e.getMessage(), AlertType.ERROR);
+		catch(Exception e) {
+			Alerts.showAlert("Erro ao salvar o pedido", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 	
@@ -160,10 +155,10 @@ public class IfoodOrderFormController implements Initializable {
 	public IfoodOrder getFormData() {
 		labelErrorDeliveryValue.setText("");
 		labelErrorOrderValue.setText("");
-		labelErrorPaymentMethod.setText("");
 		labelErrorPaymentValue.setText("");
 		
 		ValidationExceptions exception = new ValidationExceptions("Validation error");
+		String error = "Campo não pode estar vazio";
 		
 		order.setType(Type.VIA_IFOOD);
 		
@@ -174,45 +169,52 @@ public class IfoodOrderFormController implements Initializable {
 			order.setDate(LocalDate.now());
 		}
 		if (txtOrderValue.getText() == null || txtOrderValue.getText().trim().equals("")) {
-			exception.addError("orderValue", "Field can't be empty");
+			exception.addError("orderValue", error);
 		}
-		order.setOrderValue(new BigDecimal(txtOrderValue.getText()));
-		
+		else {
+			order.setOrderValue(new BigDecimal(txtOrderValue.getText()));
+		}
 		if (txtDeliveryValue.getText() == null || txtDeliveryValue.getText().trim().equals("")){
-			exception.addError("deliveryValue", "Field can't be empty");
+			exception.addError("deliveryValue", error);
 		}
-		order.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
-		
-		if(comboBoxPayment.getValue() == null) {
-			exception.addError("paymentMethod", "You must select one Payment method");
+		else {
+			order.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
 		}
-		
 		order.setPaymentMethod(comboBoxPayment.getValue());
 		if(comboBoxPayment.getValue() == PaymentMethod.IFOOD) {
-			order.feeForIfood();
 			order.setCategory(Category.VIA_IFOOD);
 		}
 		else {
 			order.setCategory(Category.VIA_LOJA);
 			if ("Sim".equals(comboBoxCutQuestion.getValue())) {
 				if (txtPaymentValue.getText() == null || txtPaymentValue.getText().trim().equals("") || Utils.tryParseToDouble(txtPaymentValue.getText()) == 0.00) {
-					exception.addError("paymentValue", "Field can't be empty");
+					exception.addError("paymentValue", error);
 				}
-				order.setIfoodDirectPaymentValue(new BigDecimal(txtPaymentValue.getText()));
-				order.cutPayments();
-				}
-			else {
-				order.feeForStore();
+				else {
+					order.setIfoodDirectPaymentValue(new BigDecimal(txtPaymentValue.getText()));
+					order.cutPayments();
+				}	
 			}
-		}
-		
-		if(checkBoxServiceFee.isSelected()) {
-			order.setServiceFee(1);
+			else {
+				order.setIfoodDirectPaymentValue(new BigDecimal(txtOrderValue.getText()));
+			}
 		}
 		
 		if(!exception.getErrors().isEmpty()) {
 			throw exception;
 		}
+		else {
+			if (order.getCategory() == Category.VIA_IFOOD) {
+			    order.feeForIfood();
+			} else {
+			    order.feeForStore();
+			}
+		}
+		
+		if(checkBoxServiceFee.isSelected()) {
+			order.setServiceFee(new BigDecimal("0.99"));
+		}
+		
 		return order;
 	}
 
@@ -227,6 +229,9 @@ public class IfoodOrderFormController implements Initializable {
 			txtPaymentValue.setText(order.getIfoodDirectPaymentValue().toString());
 			comboBoxPayment.setValue(order.getPaymentMethod());
 		}
+		else {
+			comboBoxPayment.getSelectionModel().selectFirst();
+		}
 	}
 	
 	public void setErrorMessages(Map<String, String> errors) {
@@ -235,7 +240,6 @@ public class IfoodOrderFormController implements Initializable {
 		labelErrorOrderValue.setText((field.contains("orderValue") ? errors.get("orderValue") : ""));
 		labelErrorDeliveryValue.setText((field.contains("deliveryValue") ? errors.get("deliveryValue") : ""));
 		labelErrorPaymentValue.setText((field.contains("paymentValue") ? errors.get("paymentValue") : ""));
-		labelErrorPaymentMethod.setText((field.contains("paymentMethod") ? errors.get("paymentMethod") : ""));
 	}
 	
 	public void loadAssociatedObjects() {
@@ -248,6 +252,7 @@ public class IfoodOrderFormController implements Initializable {
 		
 		comboBoxCutQuestion.setItems(obsCut);
 		comboBoxPayment.setItems(obsPayemnt);
+		Utils.fomartComboBoxPaymentCamelCase(comboBoxPayment);
 	}
 
 }

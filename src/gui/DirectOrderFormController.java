@@ -29,7 +29,6 @@ import javafx.scene.image.ImageView;
 import model.entities.DirectOrder;
 import model.entities.enums.PaymentMethod;
 import model.entities.enums.Type;
-import model.exceptions.DbException;
 import model.exceptions.ValidationExceptions;
 import model.services.OrderService;
 
@@ -88,8 +87,8 @@ public class DirectOrderFormController implements Initializable {
 		catch (ValidationExceptions e) {
 			setErrorMessages(e.getErrors());
 		}
-		catch (DbException e) {
-			Alerts.showAlert("Error in saving Direct Order", null, e.getMessage(), AlertType.ERROR);
+		catch(Exception e) {
+			Alerts.showAlert("Erro ao salvar o pedido", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 	
@@ -144,6 +143,7 @@ public class DirectOrderFormController implements Initializable {
 		labelErrorPaymentMethod.setText("");
 		
 		ValidationExceptions exception = new ValidationExceptions("Validation error");
+		String error = "Campo não pode estar vazio";
 		
 		order.setType(Type.VIA_PEDIDO_DIRETO);
 		
@@ -155,18 +155,23 @@ public class DirectOrderFormController implements Initializable {
 		}
 		
 		if(txtOrderValue.getText() == null || txtOrderValue.getText().trim().equals("")) {
-			exception.addError("orderValue", "Field can't be empty");
+			exception.addError("orderValue", error);
 		}
-		order.setOrderValue(new BigDecimal(txtOrderValue.getText()));
+		else {
+			order.setOrderValue(new BigDecimal(txtOrderValue.getText()));
+		}
 		if(txtDeliveryValue.getText() == null || txtDeliveryValue.getText().trim().equals("")) {
-			exception.addError("deliveryValue", "Field can't be empty");
+			exception.addError("deliveryValue", error);
 		}
-		order.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
-		
-		if(comboBoxPayment.getValue() == PaymentMethod.IFOOD || comboBoxPayment.getValue() == null) {
-			exception.addError("paymentMethod", "You must select a payment method other than Ifood");
+		else {
+			order.setDeliveryValue(new BigDecimal(txtDeliveryValue.getText()));
 		}
-		order.setPaymentMethod(comboBoxPayment.getValue());
+		if(comboBoxPayment.getValue() == PaymentMethod.IFOOD) {
+			exception.addError("paymentMethod", "Não é possível selecionar Ifood");
+		}
+		else {
+			order.setPaymentMethod(comboBoxPayment.getValue());
+		}
 		
 		if(!exception.getErrors().isEmpty()) {
 			throw exception;
@@ -199,5 +204,6 @@ public class DirectOrderFormController implements Initializable {
 		obsPayemnt = FXCollections.observableArrayList(PaymentMethod.values());
 		
 		comboBoxPayment.setItems(obsPayemnt);
+		Utils.fomartComboBoxPaymentCamelCase(comboBoxPayment);
 	}
 }
