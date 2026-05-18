@@ -1,18 +1,22 @@
 package gui.util;
 
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import model.entities.enums.PaymentMethod;
 
 public class Utils {
 
@@ -36,24 +40,44 @@ public class Utils {
 		}
 	}
 
-	public static <T> void formatTableColumnDate(TableColumn<T, Date> tableColumn, String format) {
-		tableColumn.setCellFactory(column -> {
-			TableCell<T, Date> cell = new TableCell<T, Date>() {
-				private SimpleDateFormat sdf = new SimpleDateFormat(format);
+	public static <T> void formatTableColumnDate(TableColumn<T, LocalDate> tableColumn, String format) {
+	    tableColumn.setCellFactory(column -> {
+	        TableCell<T, LocalDate> cell = new TableCell<T, LocalDate>() {
+	            private DateTimeFormatter dtf = DateTimeFormatter.ofPattern(format);
 
-				@Override
-				protected void updateItem(Date item, boolean empty) {
-					super.updateItem(item, empty);
-					if (empty) {
-						setText(null);
-					} else {
-						setText(sdf.format(item));
-					}
-				}
-			};
-			return cell;
-		});
+	            @Override
+	            protected void updateItem(LocalDate item, boolean empty) {
+	                super.updateItem(item, empty);
+	                if (empty || item == null) {
+	                    setText(null);
+	                } else {
+	                    setText(dtf.format(item));
+	                }
+	            }
+	        };
+	        return cell;
+	    });
 	}
+	
+	public static <T> void formatTableColumnDateTime(TableColumn<T, LocalDateTime> tableColumn, String format) {
+	    tableColumn.setCellFactory(column -> {
+	        TableCell<T, LocalDateTime> cell = new TableCell<T, LocalDateTime>() {
+	            private DateTimeFormatter dtf = DateTimeFormatter.ofPattern(format);
+
+	            @Override
+	            protected void updateItem(LocalDateTime item, boolean empty) {
+	                super.updateItem(item, empty);
+	                if (empty || item == null) {
+	                    setText(null);
+	                } else {
+	                    setText(dtf.format(item));
+	                }
+	            }
+	        };
+	        return cell;
+	    });
+	}
+
 
 	public static <T> void formatTableColumnDouble(TableColumn<T, Double> tableColumn, int decimalPlaces) {
 		tableColumn.setCellFactory(column -> {
@@ -70,6 +94,63 @@ public class Utils {
 				}
 			};
 			return cell;
+		});
+	}
+	
+
+	public static <T> void formatTableColumnBigDecimal(TableColumn<T, BigDecimal> tableColumn, int decimalPlaces) {
+	    tableColumn.setCellFactory(column -> {
+	        return new TableCell<T, BigDecimal>() {
+	            @Override
+	            protected void updateItem(BigDecimal item, boolean empty) {
+	                super.updateItem(item, empty);
+	 
+	                if (empty || item == null) {
+	                    setText(null);
+	                } else {
+	                    setText(String.format(Locale.US, "%." + decimalPlaces + "f", item));
+	                }
+	            }
+	        };
+	    });
+	}
+	
+	public static <T> void formatTableColumnStringCamelCase(TableColumn<T, String> tableColumn) {
+		tableColumn.setCellFactory(column ->{
+			return new TableCell<T, String>(){
+				@Override
+				protected void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+					
+					if(empty || item == null) {
+						setText(null);
+					}
+					else {		
+						String word = Arrays.stream(item.split("_"))
+			                        .map(words -> words.substring(0, 1).toUpperCase() + words.substring(1).toLowerCase())
+			                        .collect(Collectors.joining(" "));
+						setText(word.trim());
+					}
+				}
+			};
+		});
+	}
+	
+	public static <T> void formatTableColumnRowAsIndex(TableColumn<T, Integer> tableColumn) {
+		tableColumn.setCellFactory(column ->{
+			return new TableCell<T, Integer>(){
+				@Override
+				protected void updateItem(Integer item, boolean empty) {
+					super.updateItem(item, empty);
+					
+					if(empty) {
+						setText(null);
+					}
+					else {
+						setText(String.valueOf(getIndex() + 1));
+					}
+				}
+			};
 		});
 	}
 
@@ -98,5 +179,33 @@ public class Utils {
 				}
 			}
 		});
+	}
+	
+	public static void fomartComboBoxPaymentCamelCase(ComboBox<PaymentMethod> comboBox) {
+		comboBox.setConverter(new StringConverter<PaymentMethod>() {
+			
+            @Override
+            public String toString(PaymentMethod method) {
+                if (method == null) {
+                    return "";
+                }
+                return Arrays.stream(method.name().split("_"))
+                        .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
+                        .collect(Collectors.joining(" "));
+            }
+
+            @Override
+            public PaymentMethod fromString(String string) {
+                if (string == null || string.isEmpty()) {
+                    return null;
+                }
+                for (PaymentMethod paymentMethod : PaymentMethod.values()) {
+                    if (this.toString(paymentMethod).equals(string)) {
+                        return paymentMethod;
+                    }
+                }
+                return null;
+            }
+        });
 	}
 }

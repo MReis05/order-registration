@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import model.exceptions.DbException;
+
 public class Db {
 
 	private static Connection conn = null;
@@ -17,7 +19,7 @@ public class Db {
 		if(conn == null) {
 			try {
 				Properties props = loadProperties();
-				String url = props.getProperty("dburl");
+				String url = props.getProperty("db.url");
 				conn = DriverManager.getConnection(url, props);
 			} catch (SQLException e) {
 				throw new DbException(e.getMessage());
@@ -38,7 +40,7 @@ public class Db {
 	}
 
 	public static Properties loadProperties() {
-		try (FileInputStream fs = new FileInputStream("db.propeties")) {
+		try (FileInputStream fs = new FileInputStream("db.properties")) {
 			Properties props = new Properties();
 			props.load(fs);
 			return props;
